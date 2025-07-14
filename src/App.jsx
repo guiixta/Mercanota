@@ -1,6 +1,7 @@
 import React from 'react'
 import Header from './components/Header.jsx'
 import ItemMenu from './components/Menus.jsx'
+import Footer from './components/Footer.jsx'
 
 
 function App() { 
@@ -22,6 +23,7 @@ function App() {
           <ItemMenu
             Icon="bi bi-cart-plus-fill"
             Name="Adicionar produto"
+            path="/createProduto"
           />
           <ItemMenu
             Icon="bi bi-cart-check-fill"
@@ -29,6 +31,8 @@ function App() {
           />
         </section> 
       </main>
+
+      <Footer />
     </>
   )
 }

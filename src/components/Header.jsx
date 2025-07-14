@@ -1,14 +1,16 @@
 import React from 'react'
-import './header.css'
+import '../css/header.css'
+import '../css/index.css'
 import { Link } from 'react-router-dom';
 
 export default function Header({path}) {
+
   return (
     <>
-      <header className='w-full bg-sky-500 p-[1rem]' >
+      <header className='w-full bg-black p-[1rem]' >
         <nav className='flex w-full justify-between items-center'>
           <div className='Brand cursor-default ml-[5px]'>
-            <Link to={path} className='font-bold'>Mercanota</Link>
+            <Link to={path} className='font-extrabold text-blue-500 fontFamily-Eurostile'>MERCANOTA</Link>
           </div>
         
           <div className='Options'>
@@ -16,7 +18,7 @@ export default function Header({path}) {
           </div>
 
           <div className='UserOptions mr-[5px]'>
-            <button type='button' className='text-[1.5rem] cursor-pointer'><i className='bi bi-person-circle'></i></button>
+            <button type='button' className='text-[1.5rem] text-white cursor-pointer'><i className='bi bi-person-circle'></i></button>
           </div>
 
         </nav>

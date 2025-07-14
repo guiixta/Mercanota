@@ -1,4 +1,8 @@
-/* Feito por: gemini*/
+@font-face {
+  font-family: Eurostile;
+  src: url('../fonts/Eurostile Extended Bold.ttf') format('truetype');
+}
+
 /* 1. Definição das Variáveis de Cor (como no Bootstrap) */
 :root {
   --bs-blue: #0d6efd;
@@ -138,4 +142,8 @@
 }
 .btn-dark:focus {
   box-shadow: 0 0 0 0.25rem rgba(66, 70, 73, 0.5);
+}
+
+.fontFamily-Eurostile {
+  font-family: "Eurostile", sans-serif !important;
 }

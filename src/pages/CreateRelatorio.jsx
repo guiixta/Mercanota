@@ -1,36 +1,55 @@
 import Header from '../components/Header.jsx'
-import SectionT1Button from '../components/SectionText.jsx'
+import Section, {Div} from '../components/Section.jsx'
+import Footer from '../components/Footer.jsx'
+import CheckboxButtons from '../components/CheckboxBtn.jsx'
+import Button from '../components/Button.jsx'
+import AvisoVazio from '../components/AvisoVazio.jsx'
 
 
 export default function CreateRelatorio(){
   return(
     <> 
       <Header 
-       path="/"
+       path="/Welcome"
       />
-      
 
-      <main className='w-full flex flex-col'>
-        <SectionT1Button 
-          title="Criando relatorios"
-          content="Aqui você vai estar podendo criar seus relatorios de envio! Você pode fazer-los para diversas lojas ao mesmo tempo basta selecionar quais lojas o relatorio criado vai estar englobando."
-          backgroundC="bg-stone-500"
-          spanColor="text-white"
-          button="btn btn-primary"
-          border="border-black"
-          buttonName="Criar relatório"
-        />
+      <main className='w-full p-[5rem] pt-[2rem] pb-[2rem] justify-center items-center flex flex-col'>
+         
+        <Section sectionClass="bg-stone-950 flex flex-col p-[5rem] rounded-xl border border-white gap-[15px] " >
+          <Div divClass="Brand w-full flex">
+           <h1 className='cursor-default text-white font-bold text-5xl'>Novo Relatorio</h1> 
+          </Div>
+          <Div divClass="Content">
+            <span className="text-white cursor-default text-justify flex">Selecione as lojas para criar relatórios individuais ou diversos ao mesmo tempo</span> 
+          </Div>
 
-        <SectionT1Button 
-          title="Não tem loja?"
-          content="Antes de criar relatorios você precisa ter uma loja! Crie agora clicando no botão abaixo."
-          backgroundC="bg-sky-500"
-          spanColor="text-white"
-          button="btn btn-secondary"
-          border="border-white"
-          buttonName="Adicionar Loja"
-        />
-      </main>  
+          <Div divClass="Action flex flex-col w-[50%]">
+            <CheckboxButtons 
+              NameLoja="Portal"
+            />
+            <CheckboxButtons 
+              NameLoja="Cetag"
+            />
+          </Div>
+          
+          <Div divClass="CreateButtonAction flex">
+            <Button buttonClass="btn btn-primary" nomeButton="Criar" />
+          </Div>
+
+          <Div divClass="AvisoContainer text-white">
+            <AvisoVazio 
+              CorDeFundo="bg-red-950"
+              LarguraAviso="w-[50%]"
+              NameAviso="Você não tem lojas"
+              Content="Não e possível fazer relatórios sem antes criar uma loja. Clique no botão abaixo e crie suas lojas."
+              StyleButton="btn-secondary"
+              Action="Criar Loja"
+            />          
+          </Div>
+        </Section>
+        
+      </main>
+      <Footer />
     </>
   )
 }
