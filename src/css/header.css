@@ -1,0 +1,10 @@
+@import "tailwindcss";
+@font-face {
+  font-family: Eurostile;
+  src: url('../fonts/Eurostile Extended Bold.ttf') format('truetype');
+}
+
+header{
+  border-bottom: 1px oklch(0.623 0.214 259.815) solid;
+}
+
