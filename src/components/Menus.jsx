@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 export default function ItemMenu({path, Icon, Name}) {  
   return (
     <>
-      <Link to={path} className="ItemOption p-[1rem] inset-shadow-white/50 inset-shadow-sm bg-stone-800 text-white w-40 h-30 cursor-pointer flex flex-col rounded-lg">
+      <Link to={path} className="ItemOption p-[1rem] inset-shadow-white/50 inset-shadow-sm bg-stone-800 text-white w-40 h-30 cursor-pointer flex flex-col rounded-lg flex-shrink-0">
         <div className="Icon flex justify-center h-[50%] items-center text-center">
           <i className={Icon}></i>
         </div>

@@ -9,18 +9,29 @@ export default function Formulario({phpF, method, children, estilosForm}) {
   )
 }
 
-export function Label({LabelText, estilosLabel, nameInput}){
+export function Label({LabelText, estilosLabel, htmlFor, children}){
   return(
     <>
-      <label className={`${estilosLabel}`} htmlFor={`${nameInput}`}>{LabelText}</label>
+      <label className={`${estilosLabel}`} htmlFor={htmlFor}>{LabelText}{children}</label>
     </>
   )
 }
 
-export function Input({estilosInput, typeInput, placeholder, nameInput, isRequired}){
+export function Input({estilosInput, typeInput, placeholder, nameInput, isRequired, valueInput, idInput}){
+  
+  const ValoresCondicional = {};
+
+  if (valueInput !== undefined){
+    ValoresCondicional.value = valueInput;
+  }
+
+  if (idInput !== undefined){
+    ValoresCondicional.id = idInput;
+  }
+
   return(
     <>
-     <input className={`${estilosInput}`} type={`${typeInput}`} placeholder={`${placeholder}`} name={`${nameInput}`} required={isRequired}/>
+     <input className={`${estilosInput}`} {...ValoresCondicional} type={`${typeInput}`} placeholder={`${placeholder}`} name={`${nameInput}`} required={isRequired}/>
     </>
   )
 }
