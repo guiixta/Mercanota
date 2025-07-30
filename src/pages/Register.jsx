@@ -1,4 +1,4 @@
-import React, { useState  } from "react";
+import React, { useState  } from "react"; 
 import "../css/index.css";
 import { Link, useNavigate } from "react-router-dom";
 import ModalTailwind from "../components/ModalTail";
@@ -13,22 +13,21 @@ export default function RegisterSreen() {
   const [senha, setSenha] = useState('');
   const [mensagem, setMensagem] = useState('');
   const [mensagemSucesso, setMensagemSucesso] = useState('');
-  const [showModal, setShowModal] = useState(false);
+  const [ShowModal, setShowModal] = useState(false);
   const navigate = useNavigate();
 
 
 
-  const handlerModal = () => {
-    navigate('/');     
-  }
+
 
   const handleCloseModal = () => {
-    setShowModal(false);
+    navigate('/')
   }
 
   async function CadastrandoUsuario(event){
     event.preventDefault();
     setMensagem('');
+    setShowModal(false);
     
     const dados = {
       usuario: usuario,
@@ -48,12 +47,11 @@ export default function RegisterSreen() {
       if (response.ok && resultado.success){
          
         console.log ('Usuário criado com sucesso', resultado);
-
-        setMensagemSucesso(resultado.status);
         setShowModal(true);
+        setMensagemSucesso(resultado.status);
 
       }else{
-          console.log ('Falha ao criar usuario')
+          console.log ('Falha ao criar usuario');
           setMensagem(resultado.status);
         }
 
@@ -67,16 +65,16 @@ export default function RegisterSreen() {
   return (
     <>
 
-      {showModal && (
+      {ShowModal && (
             <ModalTailwind 
-              ClassName= "bg-black border border-white fade show"
+              ClassName= "bg-black border border-white"
               TitleClass= "cursor-default"
               TitleModal= "Sucesso!"
               onCloser={handleCloseModal}
-              onConfirm={handlerModal}
-              Mensagem= {mensagemSucesso}
-              CloseButtonClass= "btn btn-danger"
-              ConfirmButtonClass= "btn btn-success" 
+              Mensagem={mensagemSucesso}
+              CloseButtonClass= "btn btn-primary"
+              ButtonTask="Ir para login"
+              SvgLoading="none"
             />
       )}
       
@@ -102,7 +100,7 @@ export default function RegisterSreen() {
               <input type="password" placeholder="Crie sua senha" className="p-[0.5rem] rounded-xl font-bold border shadow-white bg-stone-500 text-white" name="pass" id="senha" value={senha} onChange={(event) => {setSenha(event.target.value)}} required autoComplete="new-password" />
 
               <div className="Voltar flex w-full py-[10px] justify-center items-center">
-                <Link to="/" className="font-bold text-blue-500 cursor-pointer">Voltar para Login</Link>
+                <Link to="/" className="font-bold text-blue-500 cursor-pointer">Voltar para login</Link>
               </div>
               <div className="Actions flex w-full justify-center items-center">
                <button type="submit" className="btn btn-primary">Criar Usuário</button>

@@ -30,6 +30,41 @@ class UsuarioRepositorio {
     return $stmt->execute();
   }
 
+  // Login functions
+
+
+  public function Logar($usuario, $senha){
+    
+    try{
+      $query = "SELECT usuario, senha FROM USUARIOS WHERE usuario = :usuario";
+
+      $stmt = $this->pdo->prepare($query);
+      $stmt->bindParam(':usuario', $usuario);
+
+      $stmt->execute();
+
+      $dadosBanco = $stmt->fetch();
+
+      $senhaVerify = password_verify($senha, $dadosBanco['senha']);
+
+        if($usuario && $senhaVerify){
+          //Login com sucesso
+          session_start();
+          $_SESSION['usuario'] = [
+              'usuario' => $usuario
+          ];
+
+        }
+
+    }catch(\PDOException $e) {
+      echo $e->getMessage();  
+    }
+
+      return $_SESSION['usuario'];
+
+  }
+
+
 }
 
 ?>
