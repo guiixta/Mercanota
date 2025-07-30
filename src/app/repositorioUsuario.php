@@ -20,7 +20,7 @@ class UsuarioRepositorio {
   }
 
   public function CadastrarUsuario($usuario, $senha){
-    $hashSenha = password_hash($senha, PASSWORD_ARGON2I);
+    $hashSenha = password_hash($senha, PASSWORD_DEFAULT);
 
     $query = "INSERT INTO USUARIOS(usuario, senha) VALUES(:usuario, :senha)";
     $stmt = $this->pdo->prepare($query);
