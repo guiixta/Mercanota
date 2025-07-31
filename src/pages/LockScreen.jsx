@@ -27,7 +27,7 @@ export default function LockScreen(){
           method:'POST', 
           headers: {
             'Content-type': 'Application/json',
-          }, 
+          },
           body: JSON.stringify(dados),
         });
 
@@ -37,7 +37,6 @@ export default function LockScreen(){
         setShowModal(true);
         setTimeout(() => {navigate('/home');}, 2000);
       }else{
-        console.error(resultado.success)
         setMensagem(resultado.status)
       }
     }catch{

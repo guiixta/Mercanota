@@ -8,13 +8,13 @@ import LockScreen from './pages/LockScreen.jsx';
 import CreateRelatorio from './pages/CreateRelatorio.jsx'
 import CreateProduto from './pages/CreateProduto.jsx';
 import RegisterSreen from './pages/Register.jsx';
-
+import ProtectedRouter from './components/RotasProtegidas.jsx';
 
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <LockScreen path="/home"/>,
+    element: <LockScreen />,
   },
 
   {
@@ -24,17 +24,29 @@ const router = createBrowserRouter([
 
   {
     path: "/home",
-    element: <App />,
+    element: (
+      <ProtectedRouter>
+        <App />
+      </ProtectedRouter>
+    ),
   },
 
   {
     path: "/createRelatorio",
-    element: <CreateRelatorio />,
+    element: (
+      <ProtectedRouter>
+        <CreateRelatorio />
+      </ProtectedRouter>
+    ),
   },
   
   {
     path: "/createProduto",
-    element: <CreateProduto />
+    element: (
+      <ProtectedRouter >
+        <CreateProduto />
+      </ProtectedRouter>
+    ),
   },
 ]);
 

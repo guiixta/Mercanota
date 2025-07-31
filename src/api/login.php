@@ -28,6 +28,8 @@
       $senhaRecebida = $dados['senha']; 
 
       if($repositorio->Logar($usuarioRecebido, $senhaRecebida)){
+        session_start();
+        $_SESSION['usuario'] = $usuarioRecebido;
         echo json_encode([
           'success' => true,
           'status' => "Usuário logado"

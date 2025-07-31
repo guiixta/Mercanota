@@ -45,23 +45,18 @@ class UsuarioRepositorio {
 
       $dadosBanco = $stmt->fetch();
 
-      $senhaVerify = password_verify($senha, $dadosBanco['senha']);
-
-        if($usuario && $senhaVerify){
-          //Login com sucesso
-          session_start();
-          $_SESSION['usuario'] = [
-              'usuario' => $usuario
-          ];
-
-        }
+      if(isset($dadosBanco)){
+        return false;
+      }
+  
+      //Sucesso ao logar
+      return password_verify($senha, $dadosBanco['senha']);
 
     }catch(\PDOException $e) {
       echo $e->getMessage();  
     }
 
-      return $_SESSION['usuario'];
-
+      return false;
   }
 
 
