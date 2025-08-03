@@ -8,22 +8,11 @@ import React from "react";
 import { Link } from "react-router-dom";
 
 
-const LojasCriadas =[
-  {
-    nome: "Portal",
-    idLoja: "2131",
-  },
-]
-
-
-
 
 export default function CreateProduto() {
   return(
     <>
-      <Header 
-        path="/home"
-      />
+      <Header />
       
       <main className='w-full p-[5rem] pt-[2rem] pb-[2rem] justify-center items-center flex flex-col'>
         <Section sectionClass="bg-stone-950 flex flex-col pt-[4rem] pb-[4rem] pr-[5rem] pl-[5rem] rounded-xl border border-white gap-[15px] " >
@@ -43,14 +32,6 @@ export default function CreateProduto() {
               <Input estilosInput="bg-stone-500 border border-white text-white font-bold p-[0.5rem] rounded-sm" placeholder="Digite o nome do produto" typeInput="text" nameInput="nome" isRequired />
               
               <Div divClass="LojasContainer flex gap-[5px] w-full">
-                {LojasCriadas.map((item) => {
-                  return (
-                    <React.Fragment key={item.idLoja}>
-                      <Input typeInput="checkbox" idInput={`loja-${item.idLoja}`} nameInput="LojasCheck" valueInput={item.idLoja} /><Label htmlFor={`loja-${item.idLoja}`} estilosLabel="text-white font-bold" LabelText={item.nome}></Label>
-                    </React.Fragment>
-                  );
-                  
-                })} 
               </Div>
               <Button buttonClass="btn btn-primary mt-[10px]" buttonType="submit" nomeButton="Criar" />
               

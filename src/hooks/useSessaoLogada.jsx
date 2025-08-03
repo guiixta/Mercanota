@@ -4,7 +4,6 @@ export function useSessaoLogada(){
   const [estaLogado, setEstaLogado] = useState(false);
   const [verificando, setVerificando] = useState(true);
 
-
   useEffect(() => {
 
     const verificar = async () =>{
@@ -16,7 +15,7 @@ export function useSessaoLogada(){
         if(resultado.success){
           setEstaLogado(true);
         }else{
-          console.log('Sessao nao ativa', resultado.success)
+          console.log('Sessao nao ativa', resultado.status)
         }
 
         }catch{

@@ -3,9 +3,7 @@
 class BancoDeDados{
 
   private static $pdo = null;
-
-
-
+  
   public static function getConexao(){
     
     if(self::$pdo != null){
@@ -29,6 +27,7 @@ class BancoDeDados{
     }
     return self::$pdo;
   }
+ 
 
 }
 

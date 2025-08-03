@@ -26,8 +26,9 @@ export default function LockScreen(){
       const response = await fetch('http://localhost:8000/src/api/login.php', { 
           method:'POST', 
           headers: {
-            'Content-type': 'Application/json',
+            'Content-Type': 'Application/json',
           },
+          credentials: 'include',
           body: JSON.stringify(dados),
         });
 

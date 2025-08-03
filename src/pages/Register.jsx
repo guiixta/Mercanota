@@ -2,6 +2,7 @@ import React, { useState  } from "react";
 import "../css/index.css";
 import { Link, useNavigate } from "react-router-dom";
 import ModalTailwind from "../components/ModalTail";
+import { useFetch } from "../hooks/useFetch";
 
 
 
@@ -17,7 +18,7 @@ export default function RegisterSreen() {
   const navigate = useNavigate();
 
 
-
+  const {carregando, error, consulta} = useFetch();
 
 
   const handleCloseModal = () => {
@@ -33,32 +34,26 @@ export default function RegisterSreen() {
       usuario: usuario,
       senha: senha,
     }
-    
-    try{
-      const response = await fetch ('http://localhost:8000/src/api/cadastro.php', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'Application/json',
-        },
-        body: JSON.stringify(dados),
-      });
-      
-      const resultado = await response.json();
-      if (response.ok && resultado.success){
-         
-        console.log ('Usuário criado com sucesso', resultado);
-        setShowModal(true);
-        setMensagemSucesso(resultado.status);
 
-      }else{
-          console.log ('Falha ao criar usuario');
-          setMensagem(resultado.status);
-        }
-
-      }catch (error){
-      console.error('Ocorreu um erro:', error);
+    const options = {
+      method: 'POST',
+      headers: {'Content-Type': 'Application/json',}, 
+      body: JSON.stringify(dados),
     }
 
+    const {response, json} = await consulta('http://localhost:8000/src/api/cadastro.php', options);
+
+    if(response.ok && json.success){
+      setShowModal(true);
+
+      setTimeout(() => {
+        navigate('/');
+      }, 2000)
+
+      setMensagemSucesso(json.status);
+    }else{
+      setMensagem(error.status);
+    }
     
   }
 
@@ -72,7 +67,7 @@ export default function RegisterSreen() {
               TitleModal= "Sucesso!"
               onCloser={handleCloseModal}
               Mensagem={mensagemSucesso}
-              CloseButtonClass= "btn btn-primary"
+              CloseButtonClass= "btn btn-primary flex-force"
               ButtonTask="Ir para login"
               SvgLoading="none"
             />
@@ -103,7 +98,23 @@ export default function RegisterSreen() {
                 <Link to="/" className="font-bold text-blue-500 cursor-pointer">Voltar para login</Link>
               </div>
               <div className="Actions flex w-full justify-center items-center">
-               <button type="submit" className="btn btn-primary">Criar Usuário</button>
+               <button type="submit" className="btn btn-primary flex-force">{carregando ?  (
+                 <>
+                   <svg className={`mr-2 size-5 animate-spin flex`} viewBox="0 0 24 24">
+                    <circle 
+                      cx="12" 
+                      cy="12" 
+                      r="10" 
+                      fill="none" 
+                      stroke="currentColor" 
+                      strokeWidth="3" 
+                      strokeLinecap="round" 
+                      strokeDasharray="40" 
+                      strokeDashoffset="20" />
+                   </svg>
+                   <span>Criar Usuário</span>
+               </>
+               ) : ('Criar Usuário')}</button>
               </div>
             </form>
           </div>

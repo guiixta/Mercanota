@@ -1,8 +1,15 @@
 
-export default function Formulario({phpF, method, children, estilosForm}) {
+export default function Formulario({phpF, method, children, estilosForm, onSubmit}) {
+
+  const ValoresCondicional = {};
+
+  if(onSubmit !== undefined){
+    ValoresCondicional.onSubmit = onSubmit;
+  }
+
   return(
     <>
-      <form action={phpF} method={`${method}`} className={`${estilosForm}`}>
+      <form action={phpF} method={`${method}`} className={`${estilosForm}`} {...ValoresCondicional}>
         {children}        
       </form>
     </>
@@ -17,7 +24,7 @@ export function Label({LabelText, estilosLabel, htmlFor, children}){
   )
 }
 
-export function Input({estilosInput, typeInput, placeholder, nameInput, isRequired, valueInput, idInput}){
+export function Input({estilosInput, typeInput, placeholder, nameInput, isRequired, valueInput, idInput, onChange}){
   
   const ValoresCondicional = {};
 
@@ -27,6 +34,10 @@ export function Input({estilosInput, typeInput, placeholder, nameInput, isRequir
 
   if (idInput !== undefined){
     ValoresCondicional.id = idInput;
+  }
+
+  if (onChange !== undefined){
+    ValoresCondicional.onChange = onChange;
   }
 
   return(

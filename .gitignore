@@ -12,6 +12,7 @@ dist
 dist-ssr
 *.local
 .parcel-cache
+/src/sessions/
 
 # Editor directories and files
 .vscode/*

@@ -70,6 +70,7 @@ function App() {
                <ItemMenu
                 Icon="bi bi-shop-window"
                 Name="Criar Loja"
+                path="/createLoja"
                />
 
                <ItemMenu

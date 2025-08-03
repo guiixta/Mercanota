@@ -3,14 +3,14 @@ import '../css/header.css'
 import '../css/index.css'
 import { Link } from 'react-router-dom';
 
-export default function Header({path}) {
+export default function Header() {
 
   return (
     <>
       <header className='w-full bg-black p-[1rem]' >
         <nav className='flex w-full justify-between items-center'>
           <div className='Brand cursor-default ml-[5px]'>
-            <Link to={path} className='font-extrabold text-blue-500 font-archivoblack'>MERCANOTA</Link>
+            <Link to="/home" className='font-extrabold text-blue-500 font-archivoblack'>MERCANOTA</Link>
           </div>
         
           <div className='Options'>

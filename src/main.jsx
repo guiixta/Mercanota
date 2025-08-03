@@ -9,6 +9,7 @@ import CreateRelatorio from './pages/CreateRelatorio.jsx'
 import CreateProduto from './pages/CreateProduto.jsx';
 import RegisterSreen from './pages/Register.jsx';
 import ProtectedRouter from './components/RotasProtegidas.jsx';
+import CreateLoja from './pages/CreateLoja.jsx';
 
 
 const router = createBrowserRouter([
@@ -48,6 +49,17 @@ const router = createBrowserRouter([
       </ProtectedRouter>
     ),
   },
+  {
+    path: "/createLoja",
+    element: (
+      <ProtectedRouter>
+        <CreateLoja />
+      </ProtectedRouter>
+    ),
+
+  },
+
+
 ]);
 
 

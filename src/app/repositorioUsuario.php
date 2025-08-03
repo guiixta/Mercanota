@@ -35,8 +35,10 @@ class UsuarioRepositorio {
 
   public function Logar($usuario, $senha){
     
+    $session = false;
+
     try{
-      $query = "SELECT usuario, senha FROM USUARIOS WHERE usuario = :usuario";
+      $query = "SELECT senha FROM USUARIOS WHERE usuario = :usuario";
 
       $stmt = $this->pdo->prepare($query);
       $stmt->bindParam(':usuario', $usuario);
@@ -45,18 +47,21 @@ class UsuarioRepositorio {
 
       $dadosBanco = $stmt->fetch();
 
-      if(isset($dadosBanco)){
+      if(empty($dadosBanco)){
         return false;
       }
   
-      //Sucesso ao logar
-      return password_verify($senha, $dadosBanco['senha']);
+      $senhaVerify = password_verify($senha, $dadosBanco['senha']);
+
+      if($usuario && $senhaVerify){
+        $session = true;
+      }
 
     }catch(\PDOException $e) {
       echo $e->getMessage();  
     }
 
-      return false;
+      return $session;
   }
 
 
