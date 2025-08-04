@@ -5,6 +5,8 @@
   require_once "../config/conexao.php";
   require_once "../app/repositorioCriarItens.php";
   require_once "../app/repositorioBuscarItens.php";
+  require_once "../app/repositorioDeletarItens.php";
+  require_once "../app/repositorioAtualizarItens.php";
 
 
   $data = new DateTime();
@@ -62,11 +64,6 @@
           'status' => $err
         ]);
       }  
-    }else{
-      json_encode([
-        'success' => false,
-        'status' => "Falha ao criar" 
-      ]);
     } // Criar loja - Fim
 
     // Buscar Lojas existentes - começo 
@@ -76,7 +73,7 @@
           
         $lojas = $repositorio->BuscarLojas($usuario);
 
-        if(isset($lojas)){
+        if($lojas){
           echo json_encode([
             'success' => true,
             'status' => "",
@@ -95,24 +92,80 @@
           'status' => $err
         ]);
       } 
+    } // Buscar Lojas - Fim
+
+    //Deletar Lojas - Começo 
     
-    }    
+    if($acao == "deletarLoja"){
 
+      if(isset($_GET['idLoja'])){
+        $idLoja = $_GET['idLoja'];
+        
+        try{
+          $repositorio = new DeletarItens($pdo);
 
+          $deletarLoja = $repositorio->DeletarLoja($idLoja, $usuario);
 
+          if($deletarLoja){
+            echo json_encode([
+              'success' => true,
+              'status' => "Loja deletada com sucesso!"
+            ]);
+          }else{
+            echo json_encode([
+              'success' => false,
+              'status' => "Erro ao deletar lojas"
+            ]);
+          }
+
+        }catch(\PDOException $err){
+          echo json_encode([
+            'success' => false,
+            'status' => $err 
+          ]);
+        }
+
+      }
+         
+    } // Deletar Lojas - Fim
+
+    if($acao == "editarLoja"){
+
+      
+      if(isset($_GET['idLoja']) && isset($_GET['nome'])){
+        $idLoja = $_GET['idLoja'];
+        $nomeNovo = $_GET['nome'];
+
+        try{
+          $repositorio = new AtualizarItens($pdo);
+
+          $update = $repositorio->UpdateLojas($idLoja, $nomeNovo);
+
+          if($update){
+            echo json_encode([
+              'success' => true,
+              'status' => "Nome alterado com sucesso!"
+            ]);
+          }else{
+            echo json_encode([
+              'success' => false,
+              'status' => "Não foi possível atualizar o nome da loja"
+            ]);
+          }
+        
+        }catch(\PDOException $err){
+          echo json_encode([
+            'success' => false,
+            'status' => $err
+          ]);
+        }
+      } 
+    } // Update lojas - fim
 
   }else{
-    json_encode([
+    echo json_encode([
       'success' => false,
       'status' => "Ação não recebida"
     ]);
   }
-
-
-
-
-
-
-  
-
 ?>

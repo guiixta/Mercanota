@@ -8,7 +8,7 @@
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "dev:mobile": "parcel ./index.html --port 5173"
+    "dev:mobile": "parcel --no-cache ./index.html --port 5173"
   },
   "dependencies": {
     "@popperjs/core": "^2.11.8",

@@ -1,4 +1,3 @@
-import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import './main.css'
 import 'bootstrap-icons/font/bootstrap-icons.css';
@@ -72,8 +71,6 @@ const router = createBrowserRouter([
 ]);
 
 
-createRoot(document.getElementById('root')).render(
-  <StrictMode>
-    <RouterProvider router={router} />
-  </StrictMode>
+createRoot(document.getElementById('root')).render(  
+      <RouterProvider router={router} />
 )

@@ -7,7 +7,7 @@ export function useFetch(){
   const [error, setError] = useState('');
 
   const consulta = useCallback(async (url, options) => {
-    setCarregando(true);
+    setCarregando(false);
 
     try{
       const response = await fetch(url, options);
