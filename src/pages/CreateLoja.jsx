@@ -36,7 +36,7 @@ export default function CreateLoja() {
         body: JSON.stringify(dados),
       }
 
-      const {response, json} = await consulta('http://localhost:8000/src/api/createLoja.php', options);
+      const {response, json} = await consulta('http://localhost:8000/src/api/loja.php?acao=criar', options);
 
       if(response.ok && json.success){
         setShowModal(true);
@@ -75,10 +75,10 @@ export default function CreateLoja() {
              <Link to={"/home"} className="p-[0.5rem] text-white bg-stone-900 hover:bg-stone-800 rounded-xl cursor-pointer" title="Voltar"><i className="bi bi-caret-left-fill"></i></Link>
             </Div>
             <Div divClass="Brand w-full flex">
-             <h1 className='cursor-default text-white font-bold text-5xl'>Novo Produto</h1> 
+             <h1 className='cursor-default text-white font-bold text-5xl'>Adicionar Loja</h1> 
             </Div>
             <Div divClass="Content">
-              <span className="text-white cursor-default text-justify flex">{'Cadastre o seus produtos aqui, adicione ele a uma loja!'}</span> 
+              <span className="text-white cursor-default text-justify flex">{'Crie suas lojas, para adicionar produtos e fazer relatórios'}</span> 
             </Div>
 
             <Div divClass="Action flex flex-col w-full">
@@ -86,25 +86,28 @@ export default function CreateLoja() {
                 <Label estilosLabel="text-white font-bold" LabelText="Nome:"><span className="text-red-600">*</span></Label>
                 <Input estilosInput="bg-stone-500 border border-white text-white font-bold p-[0.5rem] rounded-sm" placeholder="Digite o nome da loja" typeInput="text" nameInput="nome" valueInput={nomeLoja} onChange={(e) => {setNomeLoja(e.target.value)}} isRequired />
                 
-                <button className="btn btn-primary mt-[10px] flex-force" type="submit">{carregando ? ( 
-                  <>
-                    <svg className="mr-2 size-5 animate-spin" viewBox="0 0 24 24">
-                      <circle
-                        cx="12"
-                        cy="12"
-                        r="10"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="3"
-                        strokeLinecap="round"
-                        strokeDasharray="40"
-                        strokeDashoffset="20"
-                      />
-                    </svg>
-                    <span>Criando...</span>
-                  </>
-                ) : ('Cria Loja')}
-              </button>
+
+                <Div divClass="w-full">
+                  <button className="btn btn-primary mt-[10px] flex-force" type="submit">{carregando ? ( 
+                    <>
+                      <svg className="mr-2 size-5 animate-spin" viewBox="0 0 24 24">
+                        <circle
+                          cx="12"
+                          cy="12"
+                          r="10"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="3"
+                          strokeLinecap="round"
+                          strokeDasharray="40"
+                          strokeDashoffset="20"
+                        />
+                      </svg>
+                      <span>Criando...</span>
+                    </>
+                  ) : ('Cria Loja')}
+                </button>
+              </Div>
                 
               </Formulario> 
             </Div> 

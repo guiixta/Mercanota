@@ -36,7 +36,7 @@ export default function LockScreen(){
 
       if (response.ok && resultado.success){
         setShowModal(true);
-        setTimeout(() => {navigate('/home');}, 2000);
+        setTimeout(() => {navigate('/home', {replace: true})}, 2000);
       }else{
         setMensagem(resultado.status)
       }

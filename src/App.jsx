@@ -76,6 +76,7 @@ function App() {
                <ItemMenu
                 Icon="bi bi-buildings-fill"
                 Name="Gerenciar Lojas"
+                path="/userLojas"
                />
             </Div>
           </Div>
