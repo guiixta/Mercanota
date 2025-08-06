@@ -16,6 +16,7 @@ class CriarItens {
 
       return random_int($min, $max);
     }
+
     // Criar nova loja
     public function CreateLoja($nomeLoja, $dataCriada, $idLoja, $usuario){
       
@@ -30,7 +31,43 @@ class CriarItens {
       return $stmt->execute();
     }
 
+    
 
+    //Criar novo Produto
+    public function CreateProduto($idProduto, $nomeProduto, $dataCriadaP, $usuario, $idLojas){
+    
+      try{
+
+        $this->pdo->beginTransaction();
+
+        $query = "INSERT INTO PRODUTOS(idProduto, nome, dataCriada, FKusuario) VALUES(:idProdutoRecebido, :nomeRecebido, :dataRecebido, :usuarioRecebido)";
+        $stmt = $this->pdo->prepare($query);
+        $stmt->bindParam(':idProdutoRecebido', $idProduto);
+        $stmt->bindParam(':nomeRecebido', $nomeProduto);
+        $stmt->bindParam(':dataRecebido', $dataCriadaP);
+        $stmt->bindParam(':usuarioRecebido', $usuario);
+        $stmt->execute();
+
+
+        $query2 = "INSERT INTO LOJAS_PRODUTOS(FKidLoja, FKidProduto) VALUES(:idProdutoRecebido, :idLojaRecebido)";
+
+        $stmt2 = $this->pdo->prepare($query2);
+
+        foreach($idLojas as $id){
+          $stmt2->bindParam(':idProdutoRecebido', $idProduto);
+          $stmt2->bindParam(':idLojaRecebido', $id);
+          $stmt2->execute();
+        }
+
+        return $this->pdo->commit(); 
+
+      }catch(\PDOException $err){
+        $this->pdo->rollBack();
+        echo $err;
+        return false;
+      }
+        
+    }
 
 }
 

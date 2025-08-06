@@ -1,25 +1,95 @@
 import Header from "../components/Header";
 import Footer from "../components/Footer";
-import Section, {Div} from "../components/Section"
-import Formulario, {Input, Label} from "../components/Formulario";
-import Button from "../components/Button";
 import '../css/index.css'
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import React, { useEffect, useState } from "react";
 import {useFetch} from "../hooks/useFetch";
 import ModalTailwind from "../components/ModalTail";
+import MainDefault from "../components/MainDefault";
+import {SvgLoading} from "../components/Svgs";
+import AvisoVazio from "../components/AvisoVazio";
+
+
+
 
 
 export default function CreateProduto() {
   const [nomeProduto, setNomeProduto] = useState('');
+  const [ShowModal, setShowModal] = useState(false);
+  const [Lojas, setLojas] = useState([]);
+  const [Mensagem, setMensagem] = useState('');
+  const [CreateLoading, setCreateLoading] = useState(false);
+  const [LojasSelecionadas, setLojasSelecionadas] = useState([]);
+  const [StatusModal, setStatusModal] = useState('');
+  
   const {carregando, error, consulta} = useFetch();
+
+  // Functions Modal {
+
+  const handleCloseModal = () => {
+    setShowModal(false)
+  }
+
+  // }
+
+  // Function para criar um array das lojas selecionadas nos checkbox
+  const handlerSelecaoLojas = (idLoja) => {
+    // Retorna true caso o valor (idLoja) exista dentro do array
+    if(LojasSelecionadas.includes(idLoja)){
+        // Atualiza o valor do array, deixando somente os valores que retornam true para a condição (id !== idLoja), Logo o unico que ira retornar false para "diferente de (!==)" será o valor igual. 
+        setLojasSelecionadas(LojasSelecionadas.filter(id => (id !== idLoja)));
+    }else{
+      // Mantém o estado anterior e incrementa o novo
+      setLojasSelecionadas([...LojasSelecionadas, idLoja])
+    }
+  }
+
+  useEffect(() => {
+
+    const controller = new AbortController();
+
+    const BuscarLojas = async () => {
+        const options = {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'Application/json',
+          },
+          credentials: 'include',
+          signal: controller.signal,
+        }
+
+        const {response, json} = await consulta('http://localhost:8000/src/api/loja.php?acao=buscarLojas', options);
+        
+        if(response.ok && json.success){
+          setLojas(json.dados);
+        }
+
+    }
+
+    BuscarLojas();
+
+    return () => {
+      controller.abort()
+    }
+  }, [consulta]) 
 
   async function CriarProduto(e){
     e.preventDefault();
+      
 
+    if(LojasSelecionadas.length === 0){
+
+      setShowModal(true);
+
+      setTimeout(() => {setShowModal(false);}, 2000)
+      setStatusModal('Error')
+      setMensagem("Você deve selecionar pelo menos uma loja!")
+
+      return;
+    }
 
     const dados = {
       nomeProduto: nomeProduto,
+      lojas: LojasSelecionadas,
     }
 
     const options = {
@@ -30,10 +100,19 @@ export default function CreateProduto() {
       credentials: 'include',
       body: JSON.stringify(dados),
     }
+
+    setCreateLoading(true);
     
-    const {response, json} = consulta('http://localhost:8000/src/api/produto.php', options);
+    const {response, json} = await consulta('http://localhost:8000/src/api/produto.php?acao=criar', options);
 
     if(response.ok && json.success){
+      setShowModal(true);
+      
+      setTimeout(() => {setShowModal(false)}, 2000)
+
+      setMensagem(json.status);
+      setStatusModal('Sucesso!')
+      setCreateLoading(false);
       console.log('Produto cadastrado com sucesso.')
     }else{
       console.log(error)
@@ -47,39 +126,79 @@ export default function CreateProduto() {
       
       {ShowModal && (
         <ModalTailwind 
-            
-
-        />
-
+              ClassName= "bg-black border border-white"
+              TitleClass= "cursor-default"
+              TitleModal= {StatusModal}
+              onCloser={handleCloseModal}
+              Mensagem={Mensagem}
+              CloseButtonClass= "btn btn-danger flex-force"
+              ButtonTask="Fechar"
+              SvgLoading="hidden"
+            />      
       )}
-        
-      <main className='w-full p-[5rem] pt-[2rem] pb-[2rem] justify-center items-center flex flex-col'>
-        <Section sectionClass="bg-stone-950 flex flex-col pt-[4rem] pb-[4rem] pr-[5rem] pl-[5rem] rounded-xl border border-white gap-[15px] " >
-          <Div divClass="w-full flex justify-start items-center">
-           <Link to={"/home"} className="p-[0.5rem] text-white bg-stone-900 hover:bg-stone-800 rounded-xl cursor-pointer" title="Voltar"><i className="bi bi-caret-left-fill"></i></Link>
-          </Div>
-          <Div divClass="Brand w-full flex">
-           <h1 className='cursor-default text-white font-bold text-5xl'>Novo Produto</h1> 
-          </Div>
-          <Div divClass="Content">
-            <span className="text-white cursor-default text-justify flex">{'Cadastre o seus produtos aqui, adicione ele a uma loja!'}</span> 
-          </Div>
+        <MainDefault titulo="Cadastrar Produto" descricao="Adicione seus produtos para suas lojas!" localVoltar="/home">
 
-          <Div divClass="Action flex flex-col w-full">
-            <Formulario method="POST" estilosForm="flex flex-col gap-[5px]"> 
-              <Label estilosLabel="text-white font-bold" LabelText="Nome:"><span className="text-red-600">*</span></Label>
-              <Input estilosInput="bg-stone-500 border border-white text-white font-bold p-[0.5rem] rounded-sm" placeholder="Digite o nome do produto" typeInput="text" nameInput="nome" value={nomeProduto} onChange={(e) => {setNomeProduto(e.target.value)}}  isRequired />
-              
-              <Div divClass="LojasContainer flex gap-[5px] w-full">
-              </Div>
-              <Button buttonClass="btn btn-primary mt-[10px]" buttonType="submit" nomeButton="Criar" />
-              
-            </Formulario> 
-          </Div> 
-        </Section>
-    </main>
+           
+            
+          {carregando && ( 
+            <>
+              <div className="flex w-full">
+                <SvgLoading /> 
+                <span className="cursor-default font-bold text-white">Carregando...</span>
+              </div>
+            </> 
+          )} 
+          
+          {Lojas.length > 0 ? (
+            <div className="w-full">
+              <form method="POST" onSubmit={CriarProduto}>
+                <div className="LojasContainer py-[1rem] mb-[10px] border-y border-stone-700">
+                  <span className="text-white font-bold cursor-default text-xl">Suas Lojas:</span>
+                  {
+                    Lojas.map(loja => (
+                      <div key={loja.idLoja} className="flex">
+                        <input type="checkbox" id={loja.idLoja} value={loja.idLoja} onChange={() => {handlerSelecaoLojas(loja.idLoja)}} />
+                        <label className="text-white font-bold cursor-default ml-[2px]" htmlFor={loja.idLoja}>{loja.nome}</label>
+                      </div>
+                    ))
+                  }
+                </div>
+                <div className="w-full flex flex-col mb-[10px]">
+                  <label className="text-white font-bold">Nome:<span className="text-red-600">*</span></label>
+                  <input className="bg-stone-500 border border-white text-white font-bold p-[0.5rem] rounded-sm" type="text" name="Nome" placeholder="Digite o nome do Produto" value={nomeProduto} onChange={(e) => {setNomeProduto(e.target.value)}}   required />
+                </div>
 
-      <Footer /> 
+                <div className="ButtonContainer w-full">
+                  <button className="w-full btn btn-primary flex-force justify-center items-center" type="submit">{
+                    CreateLoading ? (
+                      <>
+                        <SvgLoading />
+                        <span>Criando...</span>
+                      </>
+                    ) : ('Criar Produto')
+                  }</button>
+                </div>
+              </form>
+            </div>
+
+          ) : (
+            <>
+              <div className="flex w-full justify-center items-center">
+                <AvisoVazio
+                  ClassNameContainer="bg-red-800 w-full text-white"
+                  NameAviso="Você ainda não criou lojas"
+                  Content="Nenhuma loja foi criada ainda, clique no botão abaixo para criar sua primeira loja"
+                  StyleButton="btn-secondary"
+                  Action="Ir criar loja"
+                  Path="/createLoja" 
+                />
+              </div> 
+            </>
+
+          )}
+              
+        </MainDefault>
+        <Footer /> 
     </>
   )
 }
