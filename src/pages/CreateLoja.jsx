@@ -88,7 +88,7 @@ export default function CreateLoja() {
                 
 
                 <Div divClass="w-full">
-                  <button className="btn btn-primary mt-[10px] flex-force" type="submit">{carregando ? ( 
+                  <button className="btn btn-primary mt-[10px] flex-force w-full justify-center items-center" type="submit">{carregando ? ( 
                     <>
                       <svg className="mr-2 size-5 animate-spin" viewBox="0 0 24 24">
                         <circle

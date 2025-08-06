@@ -20,148 +20,149 @@
 
 
   if(isset($acao)){
+    switch($acao){
+      case "criar":
+        try{
 
-    // Criar loja - Começo
-    if($acao == "criar"){
-      try{
-
-        $repositorio = new CriarItens($pdo);
+          $repositorio = new CriarItens($pdo);
 
 
-        $jsonRecebido = file_get_contents('php://input');  
-        $dados = json_decode($jsonRecebido, true);
-   
-        $nums = $repositorio->gerarIdInt();
+          $jsonRecebido = file_get_contents('php://input');  
+          $dados = json_decode($jsonRecebido, true);
+     
+          $nums = $repositorio->gerarIdInt();
 
-        $idLoja = $nums . $data->format('Ymd');
+          $idLoja = $nums . $data->format('Ymd');
 
-        if(isset($dados['nomeLoja']) && isset($usuario) && isset($idLoja)){
-          $nomeLoja = $dados['nomeLoja'];
+          if(isset($dados['nomeLoja']) && isset($usuario) && isset($idLoja)){
+            $nomeLoja = $dados['nomeLoja'];
 
-          if($repositorio->CreateLoja($nomeLoja, $dataFormat, $idLoja, $usuario)){
+            if($repositorio->CreateLoja($nomeLoja, $dataFormat, $idLoja, $usuario)){
+              
+              echo json_encode([
+                'success' => true,
+                'status' => "Loja criada! Verifique em: 'Ver lojas' no menu inicial"
+              ]);
+                       
+            }else{
+              echo json_encode([
+                'success' => false,
+                'status' => "Falha ao criar loja no banco de dados"
+              ]);
+            }
+          }else{
+            echo json_encode([
+              'success' => false,
+              'status' => "Informações vazias ou não criadas"
+            ]);
+          }
+
+        }catch(\PDOException $err) {
+          echo json_encode([
+            'success' => false,
+            'status' => $err
+          ]);
+        }
+        break;
+
+      case "buscarLojas":
+        try{
+          $repositorio = new BuscarItens($pdo);
             
+          $lojas = $repositorio->BuscarLojas($usuario);
+
+          if($lojas){
             echo json_encode([
               'success' => true,
-              'status' => "Loja criada! Verifique em: 'Ver lojas' no menu inicial"
-            ]);
-                     
-          }else{
-            echo json_encode([
-              'success' => false,
-              'status' => "Falha ao criar loja no banco de dados"
-            ]);
-          }
-        }else{
-          echo json_encode([
-            'success' => false,
-            'status' => "Informações vazias ou não criadas"
-          ]);
-        }
-
-      }catch(\PDOException $err) {
-        echo json_encode([
-          'success' => false,
-          'status' => $err
-        ]);
-      }  
-    } // Criar loja - Fim
-
-    // Buscar Lojas existentes - começo 
-    if($acao == "buscarLojas"){
-      try{
-        $repositorio = new BuscarItens($pdo);
-          
-        $lojas = $repositorio->BuscarLojas($usuario);
-
-        if($lojas){
-          echo json_encode([
-            'success' => true,
-            'status' => "",
-            'dados' => $lojas 
-          ]);
-        }else{
-           echo json_encode([
-             'success' => false,
-             'status' => "Lojas não encontradas"
-           ]);
-        }
-
-      }catch(\PDOException $err){
-        echo json_encode([
-          'success' => false,
-          'status' => $err
-        ]);
-      } 
-    } // Buscar Lojas - Fim
-
-    //Deletar Lojas - Começo 
-    
-    if($acao == "deletarLoja"){
-
-      if(isset($_GET['idLoja'])){
-        $idLoja = $_GET['idLoja'];
-        
-        try{
-          $repositorio = new DeletarItens($pdo);
-
-          $deletarLoja = $repositorio->DeletarLoja($idLoja, $usuario);
-
-          if($deletarLoja){
-            echo json_encode([
-              'success' => true,
-              'status' => "Loja deletada com sucesso!"
+              'status' => "",
+              'dados' => $lojas 
             ]);
           }else{
-            echo json_encode([
-              'success' => false,
-              'status' => "Erro ao deletar lojas"
-            ]);
+             echo json_encode([
+               'success' => false,
+               'status' => "Lojas não encontradas"
+             ]);
           }
 
-        }catch(\PDOException $err){
-          echo json_encode([
-            'success' => false,
-            'status' => $err 
-          ]);
-        }
-
-      }
-         
-    } // Deletar Lojas - Fim
-
-    if($acao == "editarLoja"){
-
-      
-      if(isset($_GET['idLoja']) && isset($_GET['nome'])){
-        $idLoja = $_GET['idLoja'];
-        $nomeNovo = $_GET['nome'];
-
-        try{
-          $repositorio = new AtualizarItens($pdo);
-
-          $update = $repositorio->UpdateLojas($idLoja, $nomeNovo);
-
-          if($update){
-            echo json_encode([
-              'success' => true,
-              'status' => "Nome alterado com sucesso!"
-            ]);
-          }else{
-            echo json_encode([
-              'success' => false,
-              'status' => "Não foi possível atualizar o nome da loja"
-            ]);
-          }
-        
         }catch(\PDOException $err){
           echo json_encode([
             'success' => false,
             'status' => $err
           ]);
         }
-      } 
-    } // Update lojas - fim
+        break;
 
+
+      case "deletarLoja":
+        if(isset($_GET['idLoja'])){
+          $idLoja = $_GET['idLoja'];
+          
+          try{
+            $repositorio = new DeletarItens($pdo);
+
+            $deletarLoja = $repositorio->DeletarLoja($idLoja, $usuario);
+
+            if($deletarLoja){
+              echo json_encode([
+                'success' => true,
+                'status' => "Loja deletada com sucesso!"
+              ]);
+            }else{
+              echo json_encode([
+                'success' => false,
+                'status' => "Erro ao deletar lojas"
+              ]);
+            }
+
+          }catch(\PDOException $err){
+            echo json_encode([
+              'success' => false,
+              'status' => $err 
+            ]);
+          }
+
+        }
+        break;
+
+      case "editarLoja":
+        if(isset($_GET['idLoja']) && isset($_GET['nome'])){
+          $idLoja = $_GET['idLoja'];
+          $nomeNovo = $_GET['nome'];
+
+          try{
+            $repositorio = new AtualizarItens($pdo);
+
+            $update = $repositorio->UpdateLojas($idLoja, $nomeNovo);
+
+            if($update){
+              echo json_encode([
+                'success' => true,
+                'status' => "Nome alterado com sucesso!"
+              ]);
+            }else{
+              echo json_encode([
+                'success' => false,
+                'status' => "Não foi possível atualizar o nome da loja"
+              ]);
+            }
+          
+          }catch(\PDOException $err){
+            echo json_encode([
+              'success' => false,
+              'status' => $err
+            ]);
+          }
+        }
+        break;
+
+      default:
+        echo json_encode([
+          'success' => false,
+          'status' => "Nenhuma ação recebida"
+        ]);
+        break;
+    
+    } // Fim switch
   }else{
     echo json_encode([
       'success' => false,

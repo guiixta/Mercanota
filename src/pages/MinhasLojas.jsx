@@ -223,7 +223,7 @@ export default function LojasCriadas(){
                             <span className="font-bold cursor-default text-xl">{`${loja.nome}`}</span>
                           </div>
                           <div className="w-[35%]">
-                            <span className="cursor-default text-zinc-800 text-sm">{`Criada em: ${loja.dataCriada}`}</span>
+                            <span className="cursor-default text-stone-400 text-sm">{`Criada em: ${loja.dataCriada}`}</span>
                           </div>
                           <div className="action buttons justify-center items-center flex gap-[2px] w-[25%]"> 
                             <button className="btn btn-danger" title="Excluir" onClick={() => {handlerPopup(loja.idLoja)}}><i className="bi bi-trash"></i></button>
