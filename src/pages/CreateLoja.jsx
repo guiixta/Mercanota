@@ -1,15 +1,15 @@
 import Header from "../components/Header";
 import Footer from "../components/Footer";
-import Section, {Div} from "../components/Section"
-import Formulario, {Input, Label} from "../components/Formulario";
+import {Input, Label} from "../components/Formulario";
 import ModalTailwind from "../components/ModalTail";
 import '../css/index.css'
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
 import {useFetch} from "../hooks/useFetch";
+import MainDefault from "../components/MainDefault";
+import { SvgLoading } from "../components/Svgs";
 
 
-export default function CreateLoja() {
+export default function CreateLoja(){ 
     const [nomeLoja, setNomeLoja] = useState('');
     const [mensagem, setMensagem] = useState('');
     const [ShowModal, setShowModal] = useState(false);
@@ -69,50 +69,24 @@ export default function CreateLoja() {
         )}
 
 
-        <main className='w-full p-[5rem] pt-[2rem] pb-[2rem] justify-center items-center flex flex-col'>
-          <Section sectionClass="bg-stone-950 flex flex-col pt-[4rem] pb-[4rem] pr-[5rem] pl-[5rem] rounded-xl border border-white gap-[15px] " >
-            <Div divClass="w-full flex justify-start items-center">
-             <Link to={"/home"} className="p-[0.5rem] text-white bg-stone-900 hover:bg-stone-800 rounded-xl cursor-pointer" title="Voltar"><i className="bi bi-caret-left-fill"></i></Link>
-            </Div>
-            <Div divClass="Brand w-full flex">
-             <h1 className='cursor-default text-white font-bold text-5xl'>Adicionar Loja</h1> 
-            </Div>
-            <Div divClass="Content">
-              <span className="text-white cursor-default text-justify flex">{'Crie suas lojas, para adicionar produtos e fazer relatórios'}</span> 
-            </Div>
-
-            <Div divClass="Action flex flex-col w-full">
-              <Formulario method="POST" estilosForm="flex flex-col gap-[5px]" onSubmit={Cadastre}> 
-                <Label estilosLabel="text-white font-bold" LabelText="Nome:"><span className="text-red-600">*</span></Label>
-                <Input estilosInput="bg-stone-500 border border-white text-white font-bold p-[0.5rem] rounded-sm" placeholder="Digite o nome da loja" typeInput="text" nameInput="nome" valueInput={nomeLoja} onChange={(e) => {setNomeLoja(e.target.value)}} isRequired />
+        <MainDefault titulo="Cadastrar Loja" descricao="Adicione suas lojas para cadastrar seus produtos e relatórios" localVoltar="/home">
+              <form method="POST" className="flex flex-col gap-[5px]" onSubmit={Cadastre}> 
+                <Label LabelText="Nome:"><span className="text-red-600">*</span></Label>
+                <Input placeholder="Digite o nome da loja" typeInput="text" nameInput="nome" valueInput={nomeLoja} onChange={(e) => {setNomeLoja(e.target.value)}} isRequired />
                 
 
-                <Div divClass="w-full">
+                <div className="w-full">
                   <button className="btn btn-primary mt-[10px] flex-force w-full justify-center items-center" type="submit">{carregando ? ( 
                     <>
-                      <svg className="mr-2 size-5 animate-spin" viewBox="0 0 24 24">
-                        <circle
-                          cx="12"
-                          cy="12"
-                          r="10"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth="3"
-                          strokeLinecap="round"
-                          strokeDasharray="40"
-                          strokeDashoffset="20"
-                        />
-                      </svg>
+                      <SvgLoading /> 
                       <span>Criando...</span>
                     </>
                   ) : ('Cria Loja')}
                 </button>
-              </Div>
+              </div>
                 
-              </Formulario> 
-            </Div> 
-          </Section> 
-        </main>
+              </form> 
+            </MainDefault>
 
         <Footer />
       </>
@@ -120,7 +94,6 @@ export default function CreateLoja() {
     );
     
 }
-
 
 
 

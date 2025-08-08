@@ -1,5 +1,6 @@
 import Header from "../components/Header";
 import Footer from "../components/Footer";
+import {Label, Input} from "../components/Formulario";
 import '../css/index.css'
 import React, { useEffect, useState } from "react";
 import {useFetch} from "../hooks/useFetch";
@@ -164,8 +165,8 @@ export default function CreateProduto() {
                   }
                 </div>
                 <div className="w-full flex flex-col mb-[10px]">
-                  <label className="text-white font-bold">Nome:<span className="text-red-600">*</span></label>
-                  <input className="bg-stone-500 border border-white text-white font-bold p-[0.5rem] rounded-sm" type="text" name="Nome" placeholder="Digite o nome do Produto" value={nomeProduto} onChange={(e) => {setNomeProduto(e.target.value)}}   required />
+                  <Label LabelText="Nome:"><span className="text-red-600">*</span></Label>
+                  <Input typeInput="text" nameInput="Nome" placeholder="Digite o nome do Produto" valueInput={nomeProduto} onChange={(e) => {setNomeProduto(e.target.value)}}   required />
                 </div>
 
                 <div className="ButtonContainer w-full">

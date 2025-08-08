@@ -1,30 +1,13 @@
 
-export default function Formulario({phpF, method, children, estilosForm, onSubmit}) {
-
-  const ValoresCondicional = {};
-
-  if(onSubmit !== undefined){
-    ValoresCondicional.onSubmit = onSubmit;
-  }
-
+export function Label({LabelText, htmlFor, children}){
   return(
     <>
-      <form action={phpF} method={`${method}`} className={`${estilosForm}`} {...ValoresCondicional}>
-        {children}        
-      </form>
+      <label className="text-white font-bold cursor-default" htmlFor={htmlFor}>{LabelText}{children}</label>
     </>
   )
 }
 
-export function Label({LabelText, estilosLabel, htmlFor, children}){
-  return(
-    <>
-      <label className={`${estilosLabel}`} htmlFor={htmlFor}>{LabelText}{children}</label>
-    </>
-  )
-}
-
-export function Input({estilosInput, typeInput, placeholder, nameInput, isRequired, valueInput, idInput, onChange}){
+export function Input({typeInput, placeholder, nameInput, isRequired, valueInput, idInput, onChange}){
   
   const ValoresCondicional = {};
 
@@ -42,7 +25,7 @@ export function Input({estilosInput, typeInput, placeholder, nameInput, isRequir
 
   return(
     <>
-     <input className={`${estilosInput}`} {...ValoresCondicional} type={`${typeInput}`} placeholder={`${placeholder}`} name={`${nameInput}`} required={isRequired}/>
+     <input className="bg-stone-500 border border-white text-white font-bold p-[0.5rem] rounded-sm" {...ValoresCondicional} type={`${typeInput}`} placeholder={`${placeholder}`} name={`${nameInput}`} required={isRequired}/>
     </>
   )
 }

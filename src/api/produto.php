@@ -4,6 +4,7 @@
   require_once "auth_guard.php";
   require_once "../config/conexao.php";
   require_once "../app/repositorioCriarItens.php";
+  require_once "../app/repositorioBuscarItens.php";
 
   $data = new DateTime();
   $dataFormatada = $data->format('Y-m-d, H:i:s'); 
@@ -56,6 +57,33 @@
             'status' => $err
           ]);
         }
+      break;
+
+      case "buscarProdutos":
+        try{
+          $repositorio = new BuscarItens($pdo);
+
+          $produtos = $repositorio->BuscarProdutos($usuario);
+          
+          if(!empty($produtos)){
+            echo json_encode([
+              'success' => true,
+              'dados' => $produtos
+            ]);
+          }else{
+            echo json_encode([
+              'success' => false,
+              'stauts' => "Nenhum produto encontrado"
+            ]);
+          }
+          
+        }catch(\PDOException $err){
+          echo json_encode([
+            'success' => false,
+            'stauts' => $err
+          ]);  
+          
+        } 
       break;
 
       default:

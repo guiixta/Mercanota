@@ -4,12 +4,11 @@ import 'bootstrap-icons/font/bootstrap-icons.css';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import App from './App.jsx'
 import LockScreen from './pages/LockScreen.jsx';
-import CreateRelatorio from './pages/CreateRelatorio.jsx'
 import CreateProduto from './pages/CreateProduto.jsx';
 import RegisterSreen from './pages/Register.jsx';
 import ProtectedRouter from './components/RotasProtegidas.jsx';
 import CreateLoja from './pages/CreateLoja.jsx';
-import LojasCriadas from './pages/MinhasLojas.jsx';
+import LojasCriadas from './pages/userLojas.jsx';
 
 
 const router = createBrowserRouter([
@@ -30,16 +29,7 @@ const router = createBrowserRouter([
         <App />
       </ProtectedRouter>
     ),
-  },
-
-  {
-    path: "/createRelatorio",
-    element: (
-      <ProtectedRouter>
-        <CreateRelatorio />
-      </ProtectedRouter>
-    ),
-  },
+  }, 
   
   {
     path: "/createProduto",

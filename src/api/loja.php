@@ -71,10 +71,9 @@
             
           $lojas = $repositorio->BuscarLojas($usuario);
 
-          if($lojas){
+          if(!empty($lojas)){
             echo json_encode([
               'success' => true,
-              'status' => "",
               'dados' => $lojas 
             ]);
           }else{

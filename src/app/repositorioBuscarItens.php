@@ -18,6 +18,16 @@ class BuscarItens {
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
   }
 
+  // Buscar Produtos
+  public function BuscarProdutos($usuario){
+    $query = "SELECT idProduto, nome, dataCriada FROM PRODUTOS WHERE FKusuario = :usuario";
+    $stmt = $this->pdo->prepare($query);
+    $stmt->bindParam(':usuario', $usuario);
+    $stmt->execute();
+
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+  }
+
 
 }
 
