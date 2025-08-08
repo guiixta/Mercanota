@@ -29,7 +29,8 @@ class BuscarItens {
   }
 
   // Buscar Relação Lojas_Produtos
-  public function BuscarLojasProdutos($idProdutos){
+  public function BuscarLojasProdutos($idProdutos){ 
+
 
     if(empty($idProdutos)){
       return [];
@@ -40,10 +41,7 @@ class BuscarItens {
 
     $query = "SELECT FKidProduto, FKidLoja FROM LOJAS_PRODUTOS WHERE FKidProduto IN ($placeholders)";
     $stmt = $this->pdo->prepare($query);
-
-    foreach ($idProdutos as $key => $id){
-      $stmt->bindValue($key + 1, $id, PDO::PARAM_INT);
-    }
+ 
 
     $stmt->execute($idProdutos);
 

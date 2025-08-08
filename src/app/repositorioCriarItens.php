@@ -49,13 +49,13 @@ class CriarItens {
         $stmt->execute();
 
 
-        $query2 = "INSERT INTO LOJAS_PRODUTOS(FKidLoja, FKidProduto) VALUES(:idProdutoRecebido, :idLojaRecebido)";
+        $query2 = "INSERT INTO LOJAS_PRODUTOS(FKidLoja, FKidProduto) VALUES(:idLojaRecebido, :idProdutoRecebido)";
 
         $stmt2 = $this->pdo->prepare($query2);
 
         foreach($idLojas as $id){
-          $stmt2->bindParam(':idProdutoRecebido', $idProduto);
           $stmt2->bindParam(':idLojaRecebido', $id);
+          $stmt2->bindParam(':idProdutoRecebido', $idProduto);
           $stmt2->execute();
         }
 

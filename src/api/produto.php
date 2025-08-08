@@ -94,11 +94,14 @@
 
           if(isset($dados['produtos'])){
             $idProdutos = array_column($dados['produtos'], 'idProduto');
-
             
+                       
             $repositorio = new BuscarItens($pdo);
 
             $relacaoLojasProdutos = $repositorio->BuscarLojasProdutos($idProdutos);
+            
+            var_dump($relacaoLojasProdutos);
+            exit;
 
             if(!empty($relacaoLojasProdutos)){
               echo json_encode([

@@ -54,6 +54,7 @@ export default function ProdutosCriados(){
             }
 
 
+
             const relacaoOptions = {
               method: 'POST',
               headers: {
@@ -94,6 +95,7 @@ export default function ProdutosCriados(){
     }
           
   }, [consulta]);
+
 
   const lojasMap = useMemo(() => {
 
