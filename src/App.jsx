@@ -46,6 +46,7 @@ function App() {
               <ItemMenu
                 Icon="bi bi-cart-check-fill"
                 Name="Produtos criados"
+                path="/userProdutos"
               />
 
               <ItemMenu

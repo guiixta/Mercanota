@@ -73,18 +73,61 @@
           }else{
             echo json_encode([
               'success' => false,
-              'stauts' => "Nenhum produto encontrado"
+              'status' => "Nenhum produto encontrado"
             ]);
           }
           
         }catch(\PDOException $err){
           echo json_encode([
             'success' => false,
-            'stauts' => $err
+            'status' => $err
           ]);  
           
         } 
       break;
+
+      case "buscarRelacao":
+        try{
+          $jsonRecebido = file_get_contents('php://input');
+
+          $dados = json_decode($jsonRecebido, true);
+
+          if(isset($dados['produtos'])){
+            $idProdutos = array_column($dados['produtos'], 'idProduto');
+
+            
+            $repositorio = new BuscarItens($pdo);
+
+            $relacaoLojasProdutos = $repositorio->BuscarLojasProdutos($idProdutos);
+
+            if(!empty($relacaoLojasProdutos)){
+              echo json_encode([
+                'success' => true,
+                'dados' => $relacaoLojasProdutos
+              ]);
+            }else{
+              echo json_encode([
+                'success' => false,
+                'status' => "Error ao obter Relacao Lojas e Produtos"
+              ]);
+            }
+
+          }else{
+            echo json_encode([
+              'success' => false,
+              'status' => "Nenhum dado enviado"
+            ]);
+          }
+
+
+        }catch(\PDOException $err){
+          echo json_encode([
+            'success' => false,
+            'status' => $err
+          ]);  
+        }
+      break;
+
 
       default:
       echo json_encode([  

@@ -76,6 +76,7 @@ export default function LojasCriadas(){
       const {response, json} = await consulta(`http://localhost:8000/src/api/loja.php?acao=deletarLoja&idLoja=${idLoja}`, options);
 
       handlerClosePopup();
+      
 
       if(response.ok && json.success){
 
