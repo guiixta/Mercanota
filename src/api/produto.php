@@ -99,9 +99,7 @@
             $repositorio = new BuscarItens($pdo);
 
             $relacaoLojasProdutos = $repositorio->BuscarLojasProdutos($idProdutos);
-            
-            var_dump($relacaoLojasProdutos);
-            exit;
+           
 
             if(!empty($relacaoLojasProdutos)){
               echo json_encode([
