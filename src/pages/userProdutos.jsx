@@ -13,18 +13,19 @@ export default function ProdutosCriados(){
   const [LojasProdutos, setLojasProdutos] = useState([]);
   const [ShowPoup, setShowPoup] = useState(false);
   const [Animate, setAnimate] = useState('');
-  const [idLojaRecebido, setIdLojaRecebido] = useState('');
-  const [idProdutoRecebido, setIdProdutoRecebido] = useState('');
-  
+  const [PopupAdicionar, setPopupAdicionar] = useState(false);
+  const [IdProdutoTable, setIdProdutoTable] = useState('');
+  const [LojasDisponiveis, setLojasDisponiveis] = useState([]);
+  const [LojaNova, setLojaNova] = useState('');
+
 
   const {carregando, error, consulta} = useFetch();
 
   
   // Functions do Popup & Modal {
-    const handlerPopupOpen = (idLoja, idProduto) => {
+    const handlerPopupOpen = (idProduto) => {
       setShowPoup(true)
-      setIdLojaRecebido(idLoja);
-      setIdProdutoRecebido(idProduto);
+      setIdProdutoTable(idProduto)
       setAnimate('animate__animated animate__zoomIn')
     }
 
@@ -33,78 +34,18 @@ export default function ProdutosCriados(){
       setTimeout(() => {setShowPoup(false)}, 500)
     }
 
-
-    const ActionPoup = (acao) => {
-
+    const handlerPopupAdicionarOpen = () => {
       handlerPopupClose()
-        
-      switch(acao){
-          case "Adicionar":
-            return (
-              <>
-                <Popup Titulo="" Descricao="" Animacao{Animate}>
-                  <div className="Content w-full flex flex-col">
-                    
-                    <form method="POST" onSubmit={}>
-                      <div>
-                        <select name="Lojas">
-                          {
-                            const ProdutoSelecionado = Produtos.filter(produto =>(idProdutoRecebido == produto.idProduto)
-                            const LojasDoProduto = ProdutoSelecionado.map(produto => lojasMap[produto.FKidLoja]));
+      LojasNaoAdicionadas()
+      setTimeout(() => {setPopupAdicionar(true); setAnimate('animate__animated animate__zoomIn');
+}, 500);
+          }
 
-                            LojasDoProduto.map((loja, index) => (
-                              <option key={index} value="">{loja}</option>
-                            ))
-                            
-
-                          }
-                        </select>
-                      </div>
-                      <div className="w-full">
-                        <button className="btn btn-success" type="submit">Adicionar</button>
-                      </div>
-                    </form>
-                    <div className="Exit w-full">
-                      <button className="btn btn-danger">Fechar</button>
-                    </div>
-                  </div>
-                </Popup>
-
-              </>
-            )
-          break;
-
-
-
-          case "Excluir":
-            return (
-              <>
-
-
-              </>
-            )
-          break;
-
-
-          case "Editar":
-            return (
-              <>
-
-
-              </>
-            )
-          break;
-
-
-
-
-
-          default:
-          break;
-
-      }      
-
+    const handlerPopupVoltar = () => {
+      setPopupAdicionar(false)
+      handlerPopupOpen(IdProdutoTable);
     }
+
   // }
 
 
@@ -199,7 +140,18 @@ export default function ProdutosCriados(){
     });
 
     return map;
-  }, [Lojas]) 
+  }, [Lojas]);
+
+  const LojasNaoAdicionadas = () => {
+    const relacaoExiste = LojasProdutos.filter(rel => (IdProdutoTable == rel.FKidProduto))
+
+    const idLojasAdicionadas = relacaoExiste.map(rel => rel.FKidLoja);
+
+    const LojasNAOAdicionadas = Lojas.filter(loja => !idLojasAdicionadas.includes(loja.idLoja))
+
+    setLojasDisponiveis(LojasNAOAdicionadas);
+
+  }
 
 
   if(error){
@@ -216,7 +168,7 @@ export default function ProdutosCriados(){
       <>
         <Popup Animacao={Animate} Titulo="Editar Produto">
           <div className="flex flex-col w-[20rem]">
-            <div className="w-full hover:bg-zinc-800 p-[0.5rem] cursor-pointer rounded-sm" onClick={() => {ActionPoup("Adicionar")}}>
+            <div className="w-full hover:bg-zinc-800 p-[0.5rem] cursor-pointer rounded-sm" onClick={handlerPopupAdicionarOpen}>
               <span className="cursor-default text-white cursor-pointer">Adicionar a Loja</span>  
             </div>
             <div className="w-full hover:bg-zinc-800 p-[0.5rem] cursor-pointer rounded-sm">
@@ -230,12 +182,47 @@ export default function ProdutosCriados(){
             </div>
           </div>
         </Popup>
+
+
       </>
 
     )
     }
+    {PopupAdicionar && (
+      <>
+        <Popup Animacao={Animate} Titulo="Adicionar a Loja">
+          <div className="flex flex-col w-[20rem]">
+            <form className="flex flex-col gap-[10px]">
+              <select className="text-white w-full cursor-pointer p-[0.5rem] bg-zinc-800 rounded-sm" name="LojasDisponiveis" value={LojaNova} onChange={(e) => {setLojaNova(e.target.value)}} required>
+                <option value="" disabled>-- Selecione uma Loja --</option>
+                {LojasDisponiveis.length > 0 ?(
+                  LojasDisponiveis.map(loja => (
+                    <option key={loja.idLoja} value={loja.idLoja}>{loja.nome}</option>
+                  ))
+                ) : (
+                  <>
+                    <option value="">Nenhuma loja disponivel</option>
+                  </>
+                )
+                }
+              </select>
 
-    
+              <div className="w-full">
+                <button className="btn btn-primary w-full" type="submit">Adicionar</button>
+              </div>
+            </form>
+            <div className="w-full mt-[10px]">
+              <button className="btn btn-secondary w-full" onClick={handlerPopupVoltar}>Voltar</button>
+            </div>
+          </div>
+        </Popup>
+      </>
+
+    )
+
+
+    }
+
     <MainPadrão titulo="Seus Produtos" descricao="Modifique o nome e as lojas que seus produtos pertencem" localVoltar="/home">
 
       {carregando && (
@@ -277,7 +264,7 @@ export default function ProdutosCriados(){
                           <td className="align-middle">
                             <div className="flex justify-center items-center p-1 gap-[5px]">
                               <button className="btn btn-danger"><i className="bi bi-trash-fill"></i></button>
-                              <button className="btn btn-secondary" onClick={handlerPopupOpen}><i className="bi bi-pencil-square"></i></button>
+                              <button className="btn btn-secondary" onClick={() => {handlerPopupOpen(produto.idProduto)}}><i className="bi bi-pencil-square"></i></button>
                             </div>
                           </td>
                         </tr>
