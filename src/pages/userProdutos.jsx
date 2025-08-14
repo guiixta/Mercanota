@@ -13,19 +13,97 @@ export default function ProdutosCriados(){
   const [LojasProdutos, setLojasProdutos] = useState([]);
   const [ShowPoup, setShowPoup] = useState(false);
   const [Animate, setAnimate] = useState('');
+  const [idLojaRecebido, setIdLojaRecebido] = useState('');
+  const [idProdutoRecebido, setIdProdutoRecebido] = useState('');
+  
 
   const {carregando, error, consulta} = useFetch();
 
   
   // Functions do Popup & Modal {
-    const handlerPopupOpen = () => {
+    const handlerPopupOpen = (idLoja, idProduto) => {
       setShowPoup(true)
+      setIdLojaRecebido(idLoja);
+      setIdProdutoRecebido(idProduto);
       setAnimate('animate__animated animate__zoomIn')
     }
 
     const handlerPopupClose = () => {
       setAnimate('animate__animated animate__zoomOut')
       setTimeout(() => {setShowPoup(false)}, 500)
+    }
+
+
+    const ActionPoup = (acao) => {
+
+      handlerPopupClose()
+        
+      switch(acao){
+          case "Adicionar":
+            return (
+              <>
+                <Popup Titulo="" Descricao="" Animacao{Animate}>
+                  <div className="Content w-full flex flex-col">
+                    
+                    <form method="POST" onSubmit={}>
+                      <div>
+                        <select name="Lojas">
+                          {
+                            const ProdutoSelecionado = Produtos.filter(produto =>(idProdutoRecebido == produto.idProduto)
+                            const LojasDoProduto = ProdutoSelecionado.map(produto => lojasMap[produto.FKidLoja]));
+
+                            LojasDoProduto.map((loja, index) => (
+                              <option key={index} value="">{loja}</option>
+                            ))
+                            
+
+                          }
+                        </select>
+                      </div>
+                      <div className="w-full">
+                        <button className="btn btn-success" type="submit">Adicionar</button>
+                      </div>
+                    </form>
+                    <div className="Exit w-full">
+                      <button className="btn btn-danger">Fechar</button>
+                    </div>
+                  </div>
+                </Popup>
+
+              </>
+            )
+          break;
+
+
+
+          case "Excluir":
+            return (
+              <>
+
+
+              </>
+            )
+          break;
+
+
+          case "Editar":
+            return (
+              <>
+
+
+              </>
+            )
+          break;
+
+
+
+
+
+          default:
+          break;
+
+      }      
+
     }
   // }
 
@@ -138,7 +216,7 @@ export default function ProdutosCriados(){
       <>
         <Popup Animacao={Animate} Titulo="Editar Produto">
           <div className="flex flex-col w-[20rem]">
-            <div className="w-full hover:bg-zinc-800 p-[0.5rem] cursor-pointer rounded-sm">
+            <div className="w-full hover:bg-zinc-800 p-[0.5rem] cursor-pointer rounded-sm" onClick={() => {ActionPoup("Adicionar")}}>
               <span className="cursor-default text-white cursor-pointer">Adicionar a Loja</span>  
             </div>
             <div className="w-full hover:bg-zinc-800 p-[0.5rem] cursor-pointer rounded-sm">
@@ -152,13 +230,12 @@ export default function ProdutosCriados(){
             </div>
           </div>
         </Popup>
-
-
       </>
 
     )
     }
 
+    
     <MainPadrão titulo="Seus Produtos" descricao="Modifique o nome e as lojas que seus produtos pertencem" localVoltar="/home">
 
       {carregando && (
