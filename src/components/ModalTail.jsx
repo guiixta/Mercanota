@@ -2,7 +2,7 @@ export default function ModalTailwind({ClassName, TitleClass, TitleModal, onClos
 
   return (
     <>  
-      <div className="flex inset-x-[0] justify-center fixed bg-transparent items-center z-[50]">
+      <div className="flex inset-x-[0] justify-center fixed bg-transparent items-center z-60">
         <div className={`bg-stone-800 rounded-lg top-[0] animate__animated animate__fadeInDown animate__faster shadow-xl w-full max-w-md ${ClassName}`}>
           <div className="flex justify-between items-center p-3 border-b border-stone-700">
             <h5 className={`text-xl font-bold text-white ${TitleClass}`}>

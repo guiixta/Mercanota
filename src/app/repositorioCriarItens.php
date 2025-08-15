@@ -69,6 +69,20 @@ class CriarItens {
         
     }
 
+
+    public function AdicionarLojaProduto($idLoja, $idProduto){
+      $query = "INSERT INTO LOJAS_PRODUTOS(FKidLoja, FKidProduto) VALUES(:idLojaRecebido, :idProdutoRecebido)";
+
+      $stmt = $this->pdo->prepare($query);
+      $stmt->bindParam(':idLojaRecebido', $idLoja);
+      $stmt->bindParam(':idProdutoRecebido', $idProduto);
+
+      return $stmt->execute();
+      
+    }
+
+
+
 }
 
 

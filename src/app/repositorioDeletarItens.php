@@ -33,6 +33,30 @@ class DeletarItens{
     }
   }
 
+  //Deletar Relação LOJAS_PRODUTOS
+  public function DeletarLojaProduto($idLoja, $idProduto){
+    $query = "SELECT COUNT(*) as Total FROM LOJAS_PRODUTOS WHERE FKidProduto = :FKidProdutoRecebido";
+
+    $stmt = $this->pdo->prepare($query);
+    $stmt->bindParam(':FKidProdutoRecebido', $idProduto);
+    $stmt->execute();
+
+    $resultado = $stmt->fetch();
+
+    $numeroDeRelacoes = (int) $resultado['Total'];
+
+    if($numeroDeRelacoes > 1){
+      $query2 = "DELETE FROM LOJAS_PRODUTOS WHERE FKidLoja = :FKidLojaRecebido AND FKidProduto = :FKidProdutoRecebido";
+  
+      $stmt2 = $this->pdo->prepare($query2);
+      $stmt2->bindParam(':FKidLojaRecebido', $idLoja);
+      $stmt2->bindParam(':FKidProdutoRecebido', $idProduto);
+
+      return $stmt2->execute();
+    }
+  
+  }
+
 
 
 }

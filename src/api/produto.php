@@ -5,6 +5,7 @@
   require_once "../config/conexao.php";
   require_once "../app/repositorioCriarItens.php";
   require_once "../app/repositorioBuscarItens.php";
+  require_once "../app/repositorioDeletarItens.php";
 
   $data = new DateTime();
   $dataFormatada = $data->format('Y-m-d, H:i:s'); 
@@ -129,6 +130,77 @@
         }
       break;
 
+      case "adicionarLoja":
+        try{
+          $jsonRecebido = file_get_contents('php://input');
+
+          $dados = json_decode($jsonRecebido, true);
+          
+          
+          if(isset($dados['idProduto']) && isset($dados['idLoja'])){
+
+            $idProduto = $dados['idProduto'];
+            $idLoja = $dados['idLoja'];
+
+            $repositorio = new CriarItens($pdo);
+            
+            if($repositorio->AdicionarLojaProduto($idLoja, $idProduto)){
+              echo json_encode([
+                'success' => true,
+                'status' => "Loja adicionada com sucesso!"
+              ]);
+            }else{
+              echo json_encode([
+                'success' => false
+              ]);
+            }
+
+          }
+
+        }catch(\PDOException $err){
+          echo json_encode([
+            'success' => false,
+            'status' => "Error na conexão"
+          ]); 
+        }
+
+      break;
+      
+      case "excluirLoja":        
+         try{
+            $jsonRecebido = file_get_contents('php://input');
+
+            $dados = json_decode($jsonRecebido, true);
+            
+            
+            if(isset($dados['idProduto']) && isset($dados['idLoja'])){
+
+              $idProduto = $dados['idProduto'];
+              $idLoja = $dados['idLoja'];
+
+              $repositorio = new DeletarItens($pdo);
+              
+              if($repositorio->DeletarLojaProduto($idLoja, $idProduto)){
+                echo json_encode([
+                  'success' => true,
+                  'status' => "Loja removida com sucesso!"
+                ]);
+              }else{
+                echo json_encode([
+                  'success' => false,
+                  'status' => "Você não pode deixar um produto sem loja."
+                ]);
+              }
+
+            }
+
+         }catch(\PDOException $err){
+            echo json_encode([
+              'success' => false,
+              'status' => "Error na conexão"
+            ]); 
+         } 
+      break;
 
       default:
       echo json_encode([  

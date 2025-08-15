@@ -2,11 +2,12 @@ import MainPadrão from "../components/MainDefault";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import { useFetch } from "../hooks/useFetch";
-import React, { useEffect, useState, useMemo, Fragment } from "react";
+import React, { useEffect, useState, useMemo, Fragment, useCallback } from "react";
 import { SvgLoading } from "../components/Svgs"
 import AvisoVazio from "../components/AvisoVazio";
 import Popup from "../components/Popup"; 
 import { Input, Label } from "../components/Formulario";
+import ModalTailwind from "../components/ModalTail";
 
 export default function ProdutosCriados(){
   const [Lojas, setLojas] = useState([]);
@@ -18,6 +19,9 @@ export default function ProdutosCriados(){
   const [PopupAdicionar, setPopupAdicionar] = useState(false);
   const [PopupExcluir, setPopupExcluir] = useState(false);
   const [PopupMudarNome, setPopupMudarNome] = useState(false);
+
+  const [ShowModal, setShowModal] = useState(false);
+  const [Mensagem, setMensagem] = useState('');
 
   const [IdProdutoTable, setIdProdutoTable] = useState('');
   const [ProdutoCurrent, setProdutoCurrent] = useState([]);
@@ -83,7 +87,100 @@ export default function ProdutosCriados(){
       setTimeout(() => {setPopupExcluirProduto(false)}, 500)
     }
 
+
+    const ModalOpen = () => {
+      setShowModal(true);
+
+      setTimeout(() => {setShowModal(false)}, 2000)
+    }
+
+    const ModalClose = () => {
+      setShowModal(false);
+    }
+
   // }
+  
+
+  const AdicionarLoja = useCallback(async (e, idProduto, idLoja) => {
+    e.preventDefault();
+
+
+    try{
+     
+      const dados = {
+        idProduto: idProduto,
+        idLoja: idLoja,
+      }
+
+      const options = {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'Application/json',
+        },
+        credentials: 'include',
+        body: JSON.stringify(dados),
+      }
+
+      
+      const {response, json} = await consulta('http://localhost:8000/src/api/produto.php?acao=adicionarLoja', options)
+
+      if(response.ok && json.success){
+        setPopupAdicionar(false)
+        ModalOpen();
+        setMensagem(json.status)
+        setTimeout(() => {location.reload()}, 2000)
+      }else{
+        setPopupAdicionar(false);
+        alert("Error em atualizar");
+      }
+
+    }catch{
+      setPopupAdicionar(false);
+      alert("Error na conexão");
+    }
+
+
+
+  }, [consulta]);
+
+  const ExcluirLoja = useCallback(async (e, idProduto, idLoja) => {
+    e.preventDefault();
+
+    try{
+      const dados = {
+        idProduto: idProduto,
+        idLoja: idLoja,
+      }
+
+      const options = {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'Application/json',
+        },
+        credentials: 'include',
+        body: JSON.stringify(dados),
+      }
+
+      
+      const {response, json} = await consulta('http://localhost:8000/src/api/produto.php?acao=excluirLoja', options)
+
+      if(response.ok && json.success){
+        setPopupExcluir(false)
+        ModalOpen();
+        setMensagem(json.status)
+        setTimeout(() => {location.reload()}, 2000)
+      }else{
+        setPopupExcluir(false);
+        alert(json.status);
+      }
+
+    }catch{
+      setPopupAdicionar(false);
+      alert("Error na conexão");
+
+    }
+
+  }, [consulta]);
 
 
   useEffect(() => {
@@ -218,6 +315,24 @@ export default function ProdutosCriados(){
 
     <Header />
 
+    {ShowModal && (
+      <>
+        <ModalTailwind 
+          ClassName= "bg-black border border-white"
+          TitleClass= "cursor-default"
+          TitleModal= "Sucesso!"
+          onCloser={ModalClose}
+          Mensagem={Mensagem}
+          CloseButtonClass= "btn btn-danger flex-force"
+          ButtonTask="Fechar"
+          SvgLoading="block"
+        />
+        
+      </>
+
+
+    )
+    }
 
     {ShowPoup && (
       <>
@@ -247,7 +362,7 @@ export default function ProdutosCriados(){
       <>
         <Popup Animacao={Animate} Titulo="Adicionar a Loja">
           <div className="flex flex-col w-[20rem]">
-            <form className="flex flex-col gap-[10px]">
+            <form className="flex flex-col gap-[10px]" onSubmit={(e) => {AdicionarLoja(e, IdProdutoTable, LojaNova)}}>
               <select className="text-white w-full cursor-pointer p-[0.5rem] bg-zinc-800 rounded-sm" name="LojasDisponiveis" value={LojaNova} onChange={(e) => {setLojaNova(e.target.value)}} required>
                 <option value="" disabled>-- Selecione uma Loja --</option>
                 {LojasDisponiveis.length > 0 ?(
@@ -263,7 +378,19 @@ export default function ProdutosCriados(){
               </select>
 
               <div className="w-full">
-                <button className="btn btn-primary w-full" type="submit">Adicionar</button>
+                <button className="btn btn-primary flex-force items-center justify-center w-full" type="submit">{
+                  carregando ? (
+                    <>
+                      <SvgLoading />
+                      Adicionar
+                    </>
+                  ) : (
+                    <>
+                      Adicionar
+                    </>
+                  )
+
+                }</button>
               </div>
             </form>
             <div className="w-full mt-[10px]">
@@ -280,18 +407,18 @@ export default function ProdutosCriados(){
       <>
         <Popup Animacao={Animate} Titulo="Remover loja">
           <div className="flex flex-col w-[20rem]">
-            <form className="flex flex-col gap-[10px]">
+            <form className="flex flex-col gap-[10px]" onSubmit={(e) => {ExcluirLoja(e, IdProdutoTable, LojaExcluir)}}>
               <select name="LojasExcluir" className="text-white w-full cursor-pointer p-[0.5rem] bg-zinc-800 rounded-sm" value={LojaExcluir} onChange={(e) => {setLojaExcluir(e.target.value)}} required>
                 <option value="" disabled>-- Selecione uma loja --</option>
                 {
-                  LojasAtivas.length > 0 ? (
+                  LojasAtivas.length > 1 ? (
                     LojasAtivas.map(loja => (
                       <option key={loja.idLoja} value={loja.idLoja}>{loja.nome}</option>
                     ))
 
                   ) : (
                     <>
-                      <option value="" disabled>Nenhuma loja encontrada</option>
+                      <option value="" disabled>Produto não pode ficar sem loja</option>
                     </>
                   )
                 }
@@ -370,7 +497,7 @@ export default function ProdutosCriados(){
                   <tr>
                     <th>Produtos</th>
                     <th>Lojas</th>
-                    <th>Editar</th>
+                    <th>Opções</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -392,8 +519,8 @@ export default function ProdutosCriados(){
                           <td className="text-center align-middle p-1">{nomeLojas.join(', ')}</td>
                           <td className="align-middle">
                             <div className="flex justify-center items-center p-1 gap-[5px]">
-                              <button className="btn btn-danger" onClick={() => {handlerPopupExcluirProdutoOpen(produto.idProduto)}}><i className="bi bi-trash-fill"></i></button>
-                              <button className="btn btn-secondary" onClick={() => {handlerPopupOpen(produto.idProduto)}}><i className="bi bi-pencil-square"></i></button>
+                              <button className="btn btn-danger" title="Excluir Produto" onClick={() => {handlerPopupExcluirProdutoOpen(produto.idProduto)}}><i className="bi bi-trash-fill"></i></button>
+                              <button className="btn btn-secondary" title="Editar" onClick={() => {handlerPopupOpen(produto.idProduto)}}><i className="bi bi-pencil-square"></i></button>
                             </div>
                           </td>
                         </tr>
