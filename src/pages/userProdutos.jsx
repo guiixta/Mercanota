@@ -2,21 +2,34 @@ import MainPadrão from "../components/MainDefault";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import { useFetch } from "../hooks/useFetch";
-import React, { useEffect, useState, useMemo } from "react";
+import React, { useEffect, useState, useMemo, Fragment } from "react";
 import { SvgLoading } from "../components/Svgs"
 import AvisoVazio from "../components/AvisoVazio";
 import Popup from "../components/Popup"; 
+import { Input, Label } from "../components/Formulario";
 
 export default function ProdutosCriados(){
   const [Lojas, setLojas] = useState([]);
   const [Produtos, setProdutos] = useState([]);
   const [LojasProdutos, setLojasProdutos] = useState([]);
+
   const [ShowPoup, setShowPoup] = useState(false);
   const [Animate, setAnimate] = useState('');
   const [PopupAdicionar, setPopupAdicionar] = useState(false);
+  const [PopupExcluir, setPopupExcluir] = useState(false);
+  const [PopupMudarNome, setPopupMudarNome] = useState(false);
+
   const [IdProdutoTable, setIdProdutoTable] = useState('');
+  const [ProdutoCurrent, setProdutoCurrent] = useState([]);
+  const [ProdutoNovoNome, setProdutoNovoNome] = useState('');
+  const [PopupExcluirProduto, setPopupExcluirProduto] = useState(false);
+
   const [LojasDisponiveis, setLojasDisponiveis] = useState([]);
+  const [LojasAtivas, setLojasAtivas] = useState([]);
+
   const [LojaNova, setLojaNova] = useState('');
+  const [LojaExcluir, setLojaExcluir] = useState('');
+  
 
 
   const {carregando, error, consulta} = useFetch();
@@ -37,13 +50,37 @@ export default function ProdutosCriados(){
     const handlerPopupAdicionarOpen = () => {
       handlerPopupClose()
       LojasNaoAdicionadas()
-      setTimeout(() => {setPopupAdicionar(true); setAnimate('animate__animated animate__zoomIn');
-}, 500);
-          }
+      setTimeout(() => {setPopupAdicionar(true); setAnimate('animate__animated animate__zoomIn');}, 500);
+    }
+
+    const handlerPopupExcluirOpen = () => {
+      handlerPopupClose()
+      LojasAtivasPush()
+      setTimeout(() => {setPopupExcluir(true); setAnimate('animate__animated animate__zoomIn');}, 500);
+    }
+
+    const handlerPopupMudarOpen = () => {
+      handlerPopupClose()
+      CurrentProduto()
+      setTimeout(() => {setPopupMudarNome(true); setAnimate('animate__animated animate__zoomIn');}, 500);
+    }
 
     const handlerPopupVoltar = () => {
       setPopupAdicionar(false)
+      setPopupExcluir(false)
+      setPopupMudarNome(false)
       handlerPopupOpen(IdProdutoTable);
+    }
+
+    const handlerPopupExcluirProdutoOpen = (idProduto) => {
+      setPopupExcluirProduto(true);
+      setAnimate('animate__animated animate__zoomIn')
+      setIdProdutoTable(idProduto);
+    }
+
+    const handlerPopupExcluirProdutoClose = () => { 
+      setAnimate('animate__animated animate__zoomOut')
+      setTimeout(() => {setPopupExcluirProduto(false)}, 500)
     }
 
   // }
@@ -153,6 +190,24 @@ export default function ProdutosCriados(){
 
   }
 
+  const LojasAtivasPush = () => {
+    
+    const relacaoExiste = LojasProdutos.filter(rel => (IdProdutoTable == rel.FKidProduto));
+
+    const idLojasAtivas = relacaoExiste.map(rel => rel.FKidLoja);
+
+    const NomeLojas = Lojas.filter(loja => idLojasAtivas.includes(loja.idLoja));
+
+    setLojasAtivas(NomeLojas);
+
+  }
+
+  const CurrentProduto = () => {
+    const ProdutoEditando = Produtos.filter(produto => (produto.idProduto == IdProdutoTable));
+    
+    setProdutoCurrent(ProdutoEditando);
+  }
+
 
   if(error){
     console.log(error)
@@ -171,10 +226,10 @@ export default function ProdutosCriados(){
             <div className="w-full hover:bg-zinc-800 p-[0.5rem] cursor-pointer rounded-sm" onClick={handlerPopupAdicionarOpen}>
               <span className="cursor-default text-white cursor-pointer">Adicionar a Loja</span>  
             </div>
-            <div className="w-full hover:bg-zinc-800 p-[0.5rem] cursor-pointer rounded-sm">
-              <span className="cursor-default text-white cursor-pointer">Remover da loja</span>  
+            <div className="w-full hover:bg-zinc-800 p-[0.5rem] cursor-pointer rounded-sm" onClick={handlerPopupExcluirOpen}>
+              <span className="cursor-default text-white cursor-pointer">Remover loja</span>  
             </div>
-            <div className="w-full hover:bg-zinc-800 p-[0.5rem] cursor-pointer rounded-sm">
+            <div className="w-full hover:bg-zinc-800 p-[0.5rem] cursor-pointer rounded-sm" onClick={handlerPopupMudarOpen}>
               <span className="cursor-default text-white cursor-pointer">Mudar Nome</span>  
             </div>
             <div className="w-full mt-[10px]">
@@ -201,7 +256,7 @@ export default function ProdutosCriados(){
                   ))
                 ) : (
                   <>
-                    <option value="">Nenhuma loja disponivel</option>
+                    <option value="" disabled>Nenhuma loja disponivel</option>
                   </>
                 )
                 }
@@ -220,7 +275,81 @@ export default function ProdutosCriados(){
 
     )
 
+    }
+    {PopupExcluir && (
+      <>
+        <Popup Animacao={Animate} Titulo="Remover loja">
+          <div className="flex flex-col w-[20rem]">
+            <form className="flex flex-col gap-[10px]">
+              <select name="LojasExcluir" className="text-white w-full cursor-pointer p-[0.5rem] bg-zinc-800 rounded-sm" value={LojaExcluir} onChange={(e) => {setLojaExcluir(e.target.value)}} required>
+                <option value="" disabled>-- Selecione uma loja --</option>
+                {
+                  LojasAtivas.length > 0 ? (
+                    LojasAtivas.map(loja => (
+                      <option key={loja.idLoja} value={loja.idLoja}>{loja.nome}</option>
+                    ))
 
+                  ) : (
+                    <>
+                      <option value="" disabled>Nenhuma loja encontrada</option>
+                    </>
+                  )
+                }
+              </select>
+
+              <div className="w-full">
+                <button className="btn btn-primary w-full" type="submit">Excluir</button>
+              </div>
+            </form>
+            <div className="w-full mt-[10px]">
+              <button className="btn btn-secondary w-full" onClick={handlerPopupVoltar}>Voltar</button>
+            </div>
+          </div>
+        </Popup>
+
+      </>
+
+    )
+    }
+
+    {PopupMudarNome && (
+      <Popup Animacao={Animate} Titulo="Mudar nome">
+        <div className="flex flex-col w-[20rem]">
+          <form className="flex flex-col gap-[10px]">
+
+            {
+              ProdutoCurrent.map(produto => (
+                <Fragment key={produto.idProduto}>
+                  <Label htmlFor="NovoNome" LabelText={`Novo nome para: ${produto.nome}`}  />
+                </Fragment>
+              ))
+            }
+            <Input typeInput="text" idInput="NovoNome" placeholder="Digite o novo nome" isRequired={true} onChange={(e) => {setProdutoNovoNome(e.target.value)}} valueInput={ProdutoNovoNome} />
+
+            <div className="w-full">
+              <button className="btn btn-primary w-full" type="submit">Mudar</button>
+            </div>
+          </form>
+
+          <div className="w-full mt-[10px]">
+            <button className="btn btn-secondary w-full" onClick={handlerPopupVoltar}>Voltar</button>
+          </div>
+        </div>
+        
+      </Popup>
+
+    )
+
+    }
+
+    {PopupExcluirProduto && (
+      <Popup Animacao={Animate} Titulo={<><i className="bi bi-exclamation-octagon-fill"></i> AVISO</>} Mensagem="Ao deletar um produto você está deletando todas suas relações com suas lojas e ele proprio. Isso não pode ser revertido! Deseja fazer isso?">
+        <div className="flex justify-start gap-[5px] items-center">
+          <button className="btn btn-danger" onClick={handlerPopupExcluirProdutoClose}>Cancelar</button>
+          <button className="btn btn-success">Confimar</button>
+        </div>
+      </Popup>
+    )  
     }
 
     <MainPadrão titulo="Seus Produtos" descricao="Modifique o nome e as lojas que seus produtos pertencem" localVoltar="/home">
@@ -263,7 +392,7 @@ export default function ProdutosCriados(){
                           <td className="text-center align-middle p-1">{nomeLojas.join(', ')}</td>
                           <td className="align-middle">
                             <div className="flex justify-center items-center p-1 gap-[5px]">
-                              <button className="btn btn-danger"><i className="bi bi-trash-fill"></i></button>
+                              <button className="btn btn-danger" onClick={() => {handlerPopupExcluirProdutoOpen(produto.idProduto)}}><i className="bi bi-trash-fill"></i></button>
                               <button className="btn btn-secondary" onClick={() => {handlerPopupOpen(produto.idProduto)}}><i className="bi bi-pencil-square"></i></button>
                             </div>
                           </td>

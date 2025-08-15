@@ -30,18 +30,4 @@ export function Input({typeInput, placeholder, nameInput, isRequired, valueInput
   )
 }
 
-export function Select({id, name, options = [], estilosSelect, placeholder }) {
-  return(
-    <> 
-      <select id={`${id}`} className={`${estilosSelect}`} placeholder={`${placeholder}`} name={`${name}`}>
-        {
-          options.map((options) => {
-            return(
-              <option value={`${options.value}`}>{options.name}</option>
-            )
-          })
-        }
-      </select>
-    </>
-  )
-}
+
