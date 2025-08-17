@@ -64,7 +64,7 @@ class CriarItens {
       }catch(\PDOException $err){
         $this->pdo->rollBack();
         echo $err;
-        return false;
+       return false;
       }
         
     }
@@ -81,7 +81,19 @@ class CriarItens {
       
     }
 
+    //Criar Grupo
+    public function CreateGrupo($idGrupo, $nome, $dataCriada, $usuario){
+      $query = "INSERT INTO GRUPOS(idGrupo, nome, dataCriada, FKusuario) VALUES(:idGrupoRecebido, :nomeRecebido, :dataCriadaRecebida, :usuarioRecebido)";
 
+      $stmt = $this->pdo->prepare($query);
+      $stmt->bindParam(':idGrupoRecebido', $idGrupo);
+      $stmt->bindParam(':nomeRecebido', $nome);
+      $stmt->bindParam(':dataCriadaRecebida', $dataCriada);
+      $stmt->bindParam(':usuarioRecebido', $usuario);
+
+      return $stmt->execute();
+
+    }
 
 }
 

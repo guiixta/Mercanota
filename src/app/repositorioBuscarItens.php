@@ -49,6 +49,16 @@ class BuscarItens {
     
   }
 
+  public function BuscarGrupos($usuario){
+    $query = "SELECT idGrupo, nome, dataCriada FROM GRUPOS WHERE FKusuario = :FKusuario";
+
+    $stmt = $this->pdo->prepare($query);
+    $stmt->bindParam(':FKusuario', $usuario);
+    $stmt->execute();
+
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+  }
+
 
 }
 
