@@ -57,6 +57,42 @@ class DeletarItens{
   
   }
 
+  //Deletar Produto e suas relaçoes
+  public function DeletarProduto($idProduto){
+    try{
+      $this->pdo->beginTransaction();
+
+      $stmt = $this->pdo->prepare("DELETE FROM PRODUTOS WHERE idProduto = :idProdutoRecebido");
+      $stmt->bindParam(':idProdutoRecebido', $idProduto);
+      $stmt->execute();
+
+      $stmt2 = $this->pdo->prepare("DELETE FROM LOJAS_PRODUTOS WHERE FKidProduto = :idProdutoRecebido");
+      $stmt2->bindParam(':idProdutoRecebido', $idProduto);
+      $stmt2->execute();
+
+
+      $stmt3 = $this->pdo->prepare("DELETE FROM PRODUTOS_ATRIBUTOS WHERE FKidProduto = :idProdutoRecebido");
+      $stmt3->bindParam(':idProdutoRecebido', $idProduto);
+      $stmt3->execute();
+
+      $stmt4 = $this->pdo->prepare("DELETE FROM PRODUTOS_RELATORIOS WHERE FKidProduto = :idProdutoRecebido");
+      $stmt4->bindParam(':idProdutoRecebido', $idProduto);
+      $stmt4->execute();
+
+      $stmt5 = $this->pdo->prepare("DELETE FROM VARIACOES WHERE FKidProduto = :idProdutoRecebido");
+      $stmt5->bindParam(':idProdutoRecebido', $idProduto);
+      $stmt5->execute();
+
+
+      return $this->pdo->commit();
+
+    }catch(\PDOException){
+      $this->pdo->rollBack();
+      return false;    
+    }
+  
+  }
+
 
 
 }

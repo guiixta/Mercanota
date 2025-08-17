@@ -183,6 +183,87 @@ export default function ProdutosCriados(){
   }, [consulta]);
 
 
+  const EditarNome = useCallback(async (e, idProduto, nome) => {
+    e.preventDefault()
+
+    try{
+    
+      const dados = {
+        idProduto: idProduto,
+        nomeNovo: nome,
+      }
+
+      const options = {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'Application/json',
+        },
+        credentials: 'include',
+        body: JSON.stringify(dados),
+      }
+
+      
+      const {response, json} = await consulta('http://localhost:8000/src/api/produto.php?acao=mudarNome', options)
+
+      if(response.ok && json.success){
+        setPopupMudarNome(false)
+        ModalOpen();
+        setMensagem(json.status)
+        setTimeout(() => {location.reload()}, 2000)
+      }else{
+        setPopupExcluir(false);
+        alert(json.status);
+      }
+
+    }catch{
+      setPopupAdicionar(false);
+      alert("Error na conexão");
+
+    }
+
+
+  }, [consulta])
+
+
+  const ExcluirProduto = useCallback(async (idProduto) => {
+    
+    try{
+
+      const dados = {
+        idProduto: idProduto,
+      }
+
+      const options = {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'Application/json',
+        },
+        credentials: 'include',
+        body: JSON.stringify(dados),
+      }
+
+      
+      const {response, json} = await consulta('http://localhost:8000/src/api/produto.php?acao=excluirProduto', options)
+
+      if(response.ok && json.success){
+        setPopupExcluirProduto(false)
+        ModalOpen();
+        setMensagem(json.status)
+        setTimeout(() => {location.reload()}, 2000)
+      }else{
+        setPopupExcluirProduto(false)
+        alert(json.status);
+      }
+
+    }catch{
+      setPopupExcluirProduto(false);
+      alert("Error na conexão");
+    }
+
+
+  }, [consulta])
+
+
   useEffect(() => {
       
     const controller = new AbortController();
@@ -442,7 +523,7 @@ export default function ProdutosCriados(){
     {PopupMudarNome && (
       <Popup Animacao={Animate} Titulo="Mudar nome">
         <div className="flex flex-col w-[20rem]">
-          <form className="flex flex-col gap-[10px]">
+          <form className="flex flex-col gap-[10px]" onSubmit={(e) => {EditarNome(e, IdProdutoTable, ProdutoNovoNome)}}>
 
             {
               ProdutoCurrent.map(produto => (
@@ -470,10 +551,10 @@ export default function ProdutosCriados(){
     }
 
     {PopupExcluirProduto && (
-      <Popup Animacao={Animate} Titulo={<><i className="bi bi-exclamation-octagon-fill"></i> AVISO</>} Mensagem="Ao deletar um produto você está deletando todas suas relações com suas lojas e ele proprio. Isso não pode ser revertido! Deseja fazer isso?">
+      <Popup Animacao={Animate} Titulo={<><i className="bi bi-exclamation-octagon-fill"></i> AVISO</>} Mensagem="Ao deletar um produto você está deletando todas suas relações com suas lojas, atributos, relatórios, variações e ele próprio. Isso não pode ser revertido! Deseja fazer isso?">
         <div className="flex justify-start gap-[5px] items-center">
           <button className="btn btn-danger" onClick={handlerPopupExcluirProdutoClose}>Cancelar</button>
-          <button className="btn btn-success">Confimar</button>
+          <button className="btn btn-success" onClick={() => {ExcluirProduto(IdProdutoTable)}}>Confimar</button>
         </div>
       </Popup>
     )  

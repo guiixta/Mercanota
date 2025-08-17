@@ -52,6 +52,7 @@ function App() {
               <ItemMenu
                 Icon="bi bi-sliders"
                 Name="Criar Atributos"
+                path="/createAtributos"
               />
 
               <ItemMenu
